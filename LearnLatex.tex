@@ -1,0 +1,192 @@
+% =============== 导言区 ===============
+\documentclass{ctexart}
+
+% AMS数学包
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+% XeLaTeX logo
+\usepackage{metalogo}	
+
+% 支持语法高亮的代码环境：lstlisting
+\usepackage{listings}
+
+
+
+% 采用titlepage自定义页面，以下信息可注释
+%\title{\LaTeX 基础}
+%\author{XiaoCY}
+%\date{\today}
+
+\newtheorem{thm}{定理}[section]
+
+\bibliographystyle{plain}
+
+% =============== 正文区 ===============
+\begin{document}
+	
+%	\maketitle	% 由titlepage代替：自定义封面
+	\begin{titlepage}
+		\ % 产生空格占位
+		
+		\vspace{\fill}
+		
+		\begin{flushright}
+			{\Huge\bfseries\LaTeX 使用简介} \\
+			\rule[1em]{\linewidth}{0.5ex}
+			
+			\begin{tabular}{rr}
+				作者 & XiaoCY \\
+				版本 & 1.0 \\
+				完成日期 & 2020-02-04 \\
+				最后修改 & 2020-02-04
+			\end{tabular}
+		\end{flushright}
+		
+		\vspace{\stretch{3}}
+		
+		{\noindent Email: chunyu2018@foxmail.com}
+	\end{titlepage}
+
+	\tableofcontents
+	\clearpage
+	
+	\section{写在前面}
+	\LaTeX 是一种区别于Word的排版软件，
+	其格式由各种命令、环境控制，
+	很容易做到内容与格式分离，
+	这是它区别于Word的重要一点。
+	这篇文章主要是本人学习 \LaTeX 的记录\cite{liuhaiyang}，
+	记录将常用的基本操作以便后期查阅，
+	同时也为感兴趣的小伙伴们做一个粗略的介绍。
+	
+	本人学习时安装的发行版为 \TeX~Live，		% ~为空格
+	对于不知道如何入门的小伙伴，
+	我同样推荐这个发行版，
+	它避免了很多繁琐的配置。
+	编译器以\XeLaTeX 为主，
+	编辑器可采用TeXstudio。
+	
+	\section{基础介绍}
+	\subsection{文档组成}
+	\LaTeX 文档的格式通常是以后缀.tex结尾的文本文件，
+	为了正常使用中文和Unicode的特殊符号，
+	务必将文本以UTF-8编码进行保存。
+	
+	\LaTeX 文档可分为导言区和正文区。
+	导言区在命令\verb|\begin{document}|之前，
+	通常对文档的性质做一些设置，
+	也可以自定义一些命令。
+	导言区之后为正文区，
+	是文档的主要内容。
+	
+	在导言区内，我们首先需要声明文档类，
+	例如本文声明C\TeX 文档类时采用了命令\verb|\documentclass{ctexart}|。
+	此外，很多优秀的宏包可以辅助我们对文档格式进行控制，
+	为了使用这些宏包，
+	我们需要在导言区使用命令\verb|\usepackage{<宏包名>}| 。
+	（如无特殊说明，本文的命令示意中以尖括号连同内容表示命令，
+	使用时不需要添加尖括号。）
+	
+	在正文区内，我们只需要输入文档的正文即可。
+	编辑器内部的各种换行不会引起排版后文档的换行，
+	中 文 文 档 的 多 余 空 格 也 不 会 在 文 档 中 出 现。 \par
+	文字换行可用双斜线\verb|\\| 实现，
+	而换段则采用空行的形式，或者使用命令\verb|\par|，
+	.tex文件内的多个空行不会在正文引起多余的空行。
+	换行和换段的区别是：
+	当设置了段落首行缩进时，
+	采用双斜线的换行不会引入缩进。
+	
+	\subsection{设置字体}
+	
+	\subsection{特殊字符}
+	\subsection{定义命令}
+	\LaTeX 中的命令又称为宏，它们都以反斜线开头，
+	一般格式为：
+	
+	\begin{quote}	% 引用环境：增加前后间距和缩进
+		\begin{tabular}{ll}
+			无参数： & \verb|\command| \\
+			有n个参数： & \verb|\command{<arg1>}{<arg2>}...{<argn>}| \\
+			有可选参数： & \verb|\command[<opt>]{<arg1>}{<arg2>}...{<argn>}| 
+		\end{tabular}
+	\end{quote}
+
+	例如，本文档在生成目录时就采用了无参数的命令\verb|\tableofcontents|。
+		
+	\subsection{环境介绍}
+	与命令相似，环境也可分为有参数的环境和无参数的环境。
+	有参数环境的一般格式为：
+	
+	\begin{quote}
+		\verb|\begin{<环境名>}[<可选参数>]{<其他必要参数>}|  \\
+		\verb|<环境内容>|	\\
+		\verb|\end{<环境名>}| 
+	\end{quote}
+	
+	一个环境就是一个分组，它限定了一些命令的作用范围。
+	除了使用环境，也可以用成对的花括号\{\}直接产生一个分组。
+	
+	这里我们举个例子说明分组的作用：
+	比如现在想修改部分字体设置为楷体，
+	这可以通过无参数的命令\verb|\kaishu|来实现。
+	但是直接使用该命令会导致以后的文字全部是楷体，
+	这时只需要\verb|{\kaishu 像这样}|构造分组，
+	就能得到{\kaishu 像这样}的局部楷体内容，
+	而不会引起后面字体的改变。
+	
+	引文环境quote是一种无参数环境，常用来引用大段文字。
+	它将环境中的内容单独分行，
+	增加缩进和上下间距排印，
+	以突出引用的部分。
+	前面环境一般格式的介绍即采用了这种环境。
+	
+	定理环境是一类环境，在使用前需要在导言区进行定义：
+	
+	\verb|\newtheorem{thm}{定理}|
+	
+	这样我们就得到了一个thm环境，
+	它在使用时会自动产生形如“定理1”的提示。
+	用同样的方法我们还可以定义引理、公理等。
+	有时候我们希望定理的编号包含章节号，
+	可在定义时增加参数即可：
+	
+	\verb|\newtheorem{thm}{定理}[section]|
+	
+	定理环境还可以有一个可选参数，即定理的名字。
+	下面给出这个环境的使用示例：
+	
+	\begin{thm}[勾股定理]
+		直角三角形斜边的平方等于两直角边的平方和。
+	\end{thm}
+	
+	表格环境table和图片环境figure均为浮动环境。
+	与一般的环境不同，
+	浮动环境可以根据文档的内容改变位置。
+	在使用浮动环境时可利用可选参数h、t、b、p的组合来指明允许的浮动位置。
+	其中：h表示代码中与前后文关系不变的位置；
+	t表示当前页面的顶端；
+	b表示当前页面的底端；
+	p表示下一页。
+	
+	
+	
+	\section{编写文档}
+	\subsection{段落间距}
+	\subsection{内容强调}
+	\subsection{添加列表}
+	\subsection{绘制表格}
+	\subsection{插入图片}
+	\subsection{数学公式}
+	\subsection{插入代码}
+	\subsection{插入引用}
+	\subsection{使用颜色}
+	\subsection{页面控制}
+	
+	\section{使用模板}
+	
+	
+	\bibliography{ref}
+\end{document}

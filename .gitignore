@@ -1,0 +1,7 @@
+unGit/
+*.aux
+*.bbl
+*.gz
+*.blg
+*log
+*.toc
