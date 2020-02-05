@@ -5,3 +5,6 @@ unGit/
 *.blg
 *log
 *.toc
+*.thm
+*.lot
+*.out

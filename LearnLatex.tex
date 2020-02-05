@@ -1,33 +1,95 @@
 % =============== 导言区 ===============
-\documentclass{ctexart}
+\documentclass[hyperref,UTF8]{ctexart}
+
+% 设置页边距的宏包
+\usepackage{geometry}
+\geometry{ % 设置整体页面格式
+	a4paper,
+	left = 2.1cm,
+	right = 2.1cm,
+	bottom = 2.1cm,
+	top = 2.5cm
+}
+
+% 设置章节标题格式
+%\CTEXsetup[
+%	name = {\S\ ,},
+%	aftername = {\hspace{2ex}}
+%	]{section}
 
 % AMS数学包
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\numberwithin{equation}{section}			% 设置公式编号包含节编号
 
 % XeLaTeX logo
 \usepackage{metalogo}	
 
+% 使用颜色
+\usepackage{xcolor}
+
 % 支持语法高亮的代码环境：lstlisting
 \usepackage{listings}
+\lstset{ % 代码环境整体设置
+	basicstyle = \ttfamily,
+	keywordstyle = \bfseries,
+	commentstyle = \rmfamily\upshape,
+	stringstyle = \ttfamily\slshape,
+	tabsize = 4,
+	backgroundcolor = \color{lightgray},	% 需先引入颜色宏包
+	frame = single,
+	language = TeX							% 设置默认语言
+}
+
+% 优化脚注
+\usepackage[perpage]{footmisc}	% 脚注每页清零
+\usepackage{pifont}				% 优化带圈的数字
+\renewcommand{\thefootnote}{\ding{\numexpr171+\value{footnote}}}
+
+% 图表宏包
+\usepackage{graphicx}			% 插图宏包\includegraphics
+\usepackage{tabularx}			% 定宽表格
+
+% 三线表宏包
+% 顶部粗线: \toprule
+% 中间细线: \midrule, \cmidrule{a-b}
+% 底部粗线: \bottomrule
+\usepackage{booktabs}
+
+% 参考文献宏包
+\usepackage[super,square]{natbib}
+
+% 定义定理类
+\usepackage[thmmarks]{ntheorem}
+\newtheorem{thm}{定理}[section]
+{	% 利用分组使设置只对该分组内的定理类有效
+	\theoremstyle{nonumberplain}
+	\theoremheaderfont{\bfseries}
+	\theorembodyfont{\normalfont}
+	\theoremsymbol{\ensuremath{\Box}}
+	\newtheorem{proof}{证明}
+}
 
 
+
+% 定义四元数乘法的简写
+\newcommand{\quadprod}[2]
+	{\ensuremath{\mathfrak{#1} \otimes \mathfrak{#2}}}
+
+\bibliographystyle{unsrtnat}
 
 % 采用titlepage自定义页面，以下信息可注释
 %\title{\LaTeX 基础}
 %\author{XiaoCY}
 %\date{\today}
 
-\newtheorem{thm}{定理}[section]
-
-\bibliographystyle{plain}
-
 % =============== 正文区 ===============
 \begin{document}
-	
+
 %	\maketitle	% 由titlepage代替：自定义封面
 	\begin{titlepage}
+		\zihao{4}	% 设置封面采用四号字
 		\ % 产生空格占位
 		
 		\vspace{\fill}
@@ -46,11 +108,24 @@
 		
 		\vspace{\stretch{3}}
 		
-		{\noindent Email: chunyu2018@foxmail.com}
+		{\noindent 
+			\textsl{Email}: 
+			\href{mailto:chunyu2018@foxmail.com}
+				{chunyu2018@foxmail.com}
+		}
 	\end{titlepage}
 
-	\tableofcontents
+	\zihao{-4}				% 设置全文采用小四号字
+	
+	\pagenumbering{Roman}
+	\tableofcontents		% 生成目录
 	\clearpage
+	
+	\listoftables
+	\clearpage
+	
+	\pagenumbering{arabic}
+	\setcounter{page}{1}	% 正文重新开始于1
 	
 	\section{写在前面}
 	\LaTeX 是一种区别于Word的排版软件，
@@ -82,7 +157,7 @@
 	是文档的主要内容。
 	
 	在导言区内，我们首先需要声明文档类，
-	例如本文声明C\TeX 文档类时采用了命令\verb|\documentclass{ctexart}|。
+	本文采用了命令\verb|\documentclass{ctexart}|来声明C\TeX 文档类。
 	此外，很多优秀的宏包可以辅助我们对文档格式进行控制，
 	为了使用这些宏包，
 	我们需要在导言区使用命令\verb|\usepackage{<宏包名>}| 。
@@ -93,15 +168,136 @@
 	编辑器内部的各种换行不会引起排版后文档的换行，
 	中 文 文 档 的 多 余 空 格 也 不 会 在 文 档 中 出 现。 \par
 	文字换行可用双斜线\verb|\\| 实现，
-	而换段则采用空行的形式，或者使用命令\verb|\par|，
-	.tex文件内的多个空行不会在正文引起多余的空行。
+	而换段则采用空行的形式，或者使用命令\verb|\par|。
+	tex文件内的多个空行或多个\verb|\par|不会在正文引起多余的空行。
 	换行和换段的区别是：
-	当设置了段落首行缩进时，
-	采用双斜线的换行不会引入缩进。
+	当设置了段落首行缩进时，换行不会引入缩进。
+	
+	\subsection{使用符号}
+	正文中绝大多数符号都可以由键盘直接输入，如@。
+	但是有一些符号在 \LaTeX 中具有特殊的作用，
+	因而不能直接在正文中使用。
+	通常情况下我们可以在这些符号前面加上反斜线\textbackslash，
+	但是也有个别例外。
+	这些特殊符号的作用和使用方法如表\ref{tab:symbol} 所示。
+	
+	\begin{table}
+		\centering
+		\caption{特殊符号及其说明}
+		\label{tab:symbol}
+		\begin{tabular}{cll}
+			\toprule
+			符号 & 作用 & 输入方式\\
+			\midrule
+			\~{} & 不可打断的空格 & \verb|\~{}| \\
+			\# & 用于宏定义 & \verb|\#| \\
+			\$ & 数学模式 & \verb|\$| \\
+			\% & 注释符 & \verb|\%| \\
+			\^{} & 上标 & \verb|\^{}| \\
+			\& & 用于表格对齐 & \verb|\&| \\
+			\{\ \} & 用于分组 & \verb|\{ \}| \\
+			\_ & 数学下标 & \verb|\_| \\
+			\textbackslash & 宏命令和转义符 & \verb|\textbackslash| \\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	除此之外，符号-在 \LaTeX 正文中有很多用途：
+	在数学模式下它是减号，如$3-1=2$；
+	单独使用时它是英文连字符，如good-looking；
+	两个连用（-\,-）时用来表示数字范围，如1--10；
+	三个连用（-\,-\,-）时是破折号---比如这里。
+	
+	为了在正文中使用空格，可以采用反斜线和空格组合实现。
+	此外，有一种称为幻影的神奇空格，
+	它由命令\verb|\phantom{<内容>}|生成，
+	空格的长度与\verb|<内容>|所占据的长度相同。
 	
 	\subsection{设置字体}
+	字体具有五种不同的性质，
+	在 \LaTeX 中一起决定了文字最终的输出效果。
+	字号（font size）是指文字的大小，
+	常常被独立出来，看作不同于字体的单独的性质；
+	字体编码（font encoding）指字体包含的符号，
+	一般情况下不直接进行设定。
+	使用最多的是其他的三个性质：
+	字体族（font family）、字体形状（font shape）、
+	字体系列（font series）\footnote{通常指字体的粗细和宽度}。
+	字体的这三个性质也常称为字体的坐标。
 	
-	\subsection{特殊字符}
+	\LaTeX 提供了各种命令来对字体进行修改。
+	命令和效果如表 \ref{tab:fontcoord} 所示。
+	
+	\begin{table}
+		\centering
+		\caption{字体的坐标}
+		\label{tab:fontcoord}
+		\begin{tabular}{llll}
+			\toprule
+			字体族 & 带参数的命令 & 申明命令 & 效果 \\
+			罗马 & \verb|\textrm{<text>}| & \verb|\rmfamily|
+			    & \rmfamily Roman font family \\
+			无衬线 & \verb|\textsf{<text>}| & \verb|\sffamily|
+			    & \sffamily Sans serif font family \\
+			打字机 & \verb|\texttt{<text>}| & \verb|\ttfamily|
+			    & \ttfamily Typewriter font family \\
+			\midrule
+			字体形状 & 带参数的命令 & 申明命令 & 效果 \\
+			直立 & \verb|\textup{<text>}| & \verb|\upshape|
+			    & \upshape Upright shape \\
+			意大利 & \verb|\textit{<text>}| & \verb|\itshape|
+				& \itshape Italic shape \\
+			倾斜& \verb|\textsl{<text>}| & \verb|\slshape|
+				& \slshape Slanted shape \\
+			小型大写 & \verb|\textsc{<text>}| & \verb|\scshape|
+				& \scshape Small capitals shape \\
+			\midrule
+			字体系列 & 带参数的命令 & 申明命令 & 效果 \\
+			中等 & \verb|\textmd{<text>}| & \verb|\mdseries|
+				& \mdseries Medium series \\
+			加宽加粗 & \verb|\textbf{<text>}| & \verb|\bfseries|
+				& \bfseries Bold extended series \\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+
+	中文字体没有英文字体那么复杂的成套的变体，
+	各个字体之间一般都是独立的。
+	因此，中文字体一般只用不同的字体族进行区分。
+	ctex宏包和文档类（如ctexart）预定义了Windows常用的四种字体族：
+	宋体、黑体、楷书、仿宋。
+	为了方便使用，ctex宏包和文档类提供了简化命令：
+	\verb|\songti| {\songti 宋体}，
+	\verb|\heiti| {\heiti 黑体}，
+	\verb|\kaishu| {\kaishu 楷书}，
+	\verb|\fangsong| {\fangsong 仿宋}。
+	
+	\verb|\zihao{<字号>}|可以用来修改字体的大小，
+	例如\verb|\zihao{4}|将字号设置为四号，
+	字号前添加负号如\verb|\zihao{-4}|则表示小四号。
+	
+	除了修改字体和字号外，
+	ctex宏包和文档类还增加了各种文字强调的方式，
+	命令和效果如表\ref{tab:fontemph} 所示。
+	
+	\begin{table}
+		\centering
+		\caption{文字强调}
+		\label{tab:fontemph}
+		\begin{tabular}{ll}
+			\toprule
+			命令 & 效果\\
+			\midrule
+			\verb|\CJKunderdot{<文字>}| & \CJKunderdot{强调文字} \\
+			\verb|\CJKunderline{<文字>}| & \CJKunderline{强调文字} \\
+			\verb|\CJKunderdblline{<文字>}| & \CJKunderdblline{强调文字} \\
+			\verb|\CJKunderwave{<文字>}| & \CJKunderwave{强调文字} \\
+			\verb|\CJKsout{<文字>}| & \CJKsout{强调文字} \\
+			\verb|\CJKxout{<文字>}| & \CJKxout{强调文字} \\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
 	\subsection{定义命令}
 	\LaTeX 中的命令又称为宏，它们都以反斜线开头，
 	一般格式为：
@@ -114,76 +310,568 @@
 		\end{tabular}
 	\end{quote}
 
-	例如，本文档在生成目录时就采用了无参数的命令\verb|\tableofcontents|。
-		
+	例如，本文档在生成目录时就采用了命令\verb|\tableofcontents|。
+	
+	用户可以在导言区自定义命令，定义命令的基本格式为：
+	
+\begin{lstlisting}
+\newcommand{<命令名>}[<参数个数>][<首参数默认值>]{<定义>}
+\end{lstlisting}
+	
+	其中，命令名应当符合要求，以反斜线开头；
+	当定义无参数命令时，
+	参数个数和首参数默认值可连同中括号省略；
+	当不给定默认值时，首参数默认值可连同中括号省略；
+	当给定多个参数时，命令的定义中用井号加数字表示参数，
+	如\verb|#2|表示第二个参数。
+	
+	例如我们可以定义一个命令来简化四元数乘法，
+	按顺序输入两个四元数，
+	输出四元数的乘法。
+	定义为：
+	
+\begin{lstlisting}
+\newcommand{\quadprod}[2]    % 可换行定义命令内容
+    {\ensuremath{\mathfrak{#1} \otimes \mathfrak{#2}}}
+\end{lstlisting}
+	
+	这样就定义了一个新命令\verb|\quadprod|。
+	当使用\verb|\quadprod{q_b^a}{q_c^b}|时，
+	编译后将输出\quadprod{q_b^a}{q_c^b}。
+	
+	除了用\verb|\newcommand|构造命令外，
+	还可以使用\verb|\renewcommand|和\verb|\providecommand|。
+	它们的用法相同。区别在于，
+	\verb|\renewcommand|用于覆盖之前存在的同名命令；
+	\verb|\providecommand|则会检测是否存在同名命令，
+	若存在，则保留之前的用法，新定义不生效。
+	
 	\subsection{环境介绍}
 	与命令相似，环境也可分为有参数的环境和无参数的环境。
 	有参数环境的一般格式为：
 	
-	\begin{quote}
-		\verb|\begin{<环境名>}[<可选参数>]{<其他必要参数>}|  \\
-		\verb|<环境内容>|	\\
-		\verb|\end{<环境名>}| 
-	\end{quote}
+\begin{lstlisting}
+\begin{<环境名>}[<可选参数>]{<其他必要参数>} 
+    <环境内容>
+\end{<环境名>} 
+\end{lstlisting}
 	
 	一个环境就是一个分组，它限定了一些命令的作用范围。
 	除了使用环境，也可以用成对的花括号\{\}直接产生一个分组。
 	
-	这里我们举个例子说明分组的作用：
-	比如现在想修改部分字体设置为楷体，
-	这可以通过无参数的命令\verb|\kaishu|来实现。
-	但是直接使用该命令会导致以后的文字全部是楷体，
-	这时只需要\verb|{\kaishu 像这样}|构造分组，
-	就能得到{\kaishu 像这样}的局部楷体内容，
+	我们给出一个分组的例子：
+	为了将局部字体修改为黑体，
+	只需要\verb|{\heiti 像这样}|构造分组，
+	就能得到{\heiti 像这样}的局部黑体内容，
 	而不会引起后面字体的改变。
+
+	\section{编写文档}
+	\subsection{页面设置}
+	个人认为，页边距是使用 \LaTeX 编写文档时要考虑的第一个问题。
+	因为如果最后修改页边距，
+	一些所谓的盒子的内容有可能会超出边距，
+	从而使文档需要重复调整。
+	如果提前设置好边距，就能随时编译预览时发现问题。
 	
-	引文环境quote是一种无参数环境，常用来引用大段文字。
-	它将环境中的内容单独分行，
-	增加缩进和上下间距排印，
-	以突出引用的部分。
-	前面环境一般格式的介绍即采用了这种环境。
+	\LaTeX 对各种距离的定义较为复杂，
+	为了能够快速修改，
+	可以使用geometry宏包，
+	并在导言区使用\verb|\geometry|命令对尺寸进行设置。
 	
-	定理环境是一类环境，在使用前需要在导言区进行定义：
+	如本文采用的设置为：
 	
-	\verb|\newtheorem{thm}{定理}|
+\begin{lstlisting}
+\usepackage{geometry}
+\geometry{ % 设置整体页面格式
+	a4paper,
+	left = 2.1cm,
+	right = 2.1cm,
+	bottom = 2.1cm,
+	top = 2.5cm
+}
+\end{lstlisting}
 	
-	这样我们就得到了一个thm环境，
+	文档的第一页往往包含标题和作者等信息，
+	也可以使用一个单独的封面。
+	在标准文档类中，
+	我们可以在正文中用\verb|\maketitle|生成标题页。
+	该命令需要在导言区提前申明各种信息，如
+	\verb|\title|、\verb|\author|等。
+	
+	除了使用预定义的标题页，
+	我们也可以用titlepage环境自定义封面。
+	该环境提供没有页码的单独一页，
+	并使后面的内容页码从1开始计数。
+	
+	文档可使用\verb|\section|、\verb|\subsubsection|、
+	\verb|\subsubsubsection|分别声明节、小节、小小节。
+	\LaTeX 会自动进行编号。
+	当需要使用到附录时，
+	可使用\verb|\appendix|命令后，
+	再分别使用\verb|\section|声明各级附录。
+	附录格式的修改可使用appendix宏包，此处不具体说明。
+	
+	对于C\TeX 文档类
+	\footnote{包括书籍ctexbook，报告ctexrep,文档ctexart。}，
+	可以使用\verb|\CTEXsetup|命令来设置各章节标题的格式：
+	
+\begin{lstlisting}
+\CTEXsetup[<选项1>=<值1>,<选项2>=<值2>...]{<对象类型>}
+\end{lstlisting}
+
+	对于ctexart文档，常用的对象类型包括section、subsection
+	和subsubsection等。
+	常用的选项如表\ref{tab:ctexopt} 所示。
+	
+	\begin{table}
+		\centering
+		\caption{C\TeX 文档常用选项}
+		\label{tab:ctexopt}
+		\begin{tabular}{lll}
+			\toprule
+			选项 & 使用说明 & 值的示例 \\
+			\midrule
+			name & {<前名>,<后名>} & \verb|{第,节}| \\
+			number & 设置编号的格式 & \verb|{\chinese{section}}| \\
+			format & 章节名和章节标题的全局格式 & \verb|{\bfseries}| \\
+			nameformat & 章节名和编号的格式 & 同format \\
+			numberformat & 仅控制编号格式 & 同format \\
+			titleformat & 仅控制章节标题格式 & 同format\\
+			aftername & 章节名与标题之间的内容 & \verb|{\hspace{2ex}}| \\
+			beforeskip & 章节标题前的段间距 & \verb|{\vspace{2em}}| \\
+			afterskip & 章节标题后的段间距 & 同beforeskip \\
+			indent & 章节标题的缩进长度 & 同aftername \\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	\subsection{添加目录}
+	目录是最基本的自动化工具。
+	\LaTeX 会自动收集章节命令所定义的各章节标题，
+	用命令\verb|\tableofcontents|即可输出。
+	类似地，命令\verb|\listoffigures|和\verb|\listoftables|
+	会分别收集figure和table中\verb|\caption|命令的图表标题，
+	产生图表的目录。
+	
+	目录部分的页码常用大写的罗马数字表示，
+	这可以使用命令\verb|\pagenumbering{<格式>}|进行修改，
+	其中格式允许的值如表\ref{tab:pagenum} 所示。
+	
+	在目录部分结束之后，
+	常换页进入正文部分，
+	并将页码计数重置为1，
+	格式设置为阿拉伯数字，
+	可采用以下命令：
+	
+\begin{lstlisting}
+\clearpage					% 换页
+\pagenumbering{arabic}		% 设置页码格式
+\setcounter{page}{1}		% 正文重新开始于1
+\end{lstlisting}
+	
+	\begin{table}
+		\centering
+		\caption{页码数字格式}
+		\label{tab:pagenum}
+		\begin{tabular}{ll}
+			\toprule
+			格式 & 说明 \\
+			\midrule
+			arabic & 阿拉伯数字 \\
+			roman & 小写的罗马数字 \\
+			Roman & 大写的罗马数字 \\
+			alph & 小写的字符形式 \\
+			Alph & 大写的字符形式 \\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	\subsection{段落格式}
+	在C\TeX 文档类中已经预设了正确的首行缩进，
+	如果需要在某一段临时取消缩进，
+	可以使用\verb|\noindent|命令；
+	相反，为了在本来没有缩进的环境中临时设置缩进，
+	可使用\verb|\indent|命令。
+	这两个命令的作用范围均为一个段落，
+	因而不需要再进行分组加以限定。
+	
+	除了段落的首行缩进，另一个关于分段的重要参数是段与段之间的垂直距离。
+	这个距离由变量\verb|\parskip|控制，可以采用命令
+	\verb|\setlength{\parskip}{<length>}|进行修改。
+	这时应当注意，该命令会对后续的段落均产生影响。
+	因此当只修改某些段落的段间距时，
+	需要用花括号限制\verb|\setlength|的作用范围。
+	
+	在一些情况下，我们需要在文档内插入一段引文。
+	quote环境常用来引用小段文字，
+	该环境下没有首行缩进，
+	且左右边距比正常文本稍微大一些，
+	且增加了环境前后段的间距。
+	比如下面给出一个使用这种环境的例子。
+	
+	\begin{quote}
+		学而时习之，不亦说乎？
+	\end{quote}
+	
+	而对于大段文字的引用，
+	通常需要引入首行缩进，
+	这时可采用quotation环境，
+	如下面一段文字。
+	
+	\begin{quotation}
+		小车正穿行在落基山脉蜿蜒曲折的盘山公路上。
+		克里朵夫·李维静静地望着窗外，
+		发现每当车子即将行驶到无路的关头，
+		路边都会出现一块交通指示牌：
+		“前方转弯！”或“注意！急转弯”。
+		而拐过每一道弯之后，
+		前方照例又是一片柳暗花明、豁然开朗。
+		
+		山路弯弯、峰回路转，
+		“前方转弯”几个大字一次次地冲击着他的眼球，
+		也渐渐叩开了他的心扉：
+		原来，不是路已到了尽头，而是该转弯了。
+		路在脚下，更在心中，心随路转，心路常宽。
+		学会转弯也是人生的智慧，
+		因为挫折往往是转折，危机同时是转机。
+	\end{quotation}
+	
+	\subsection{定理环境}
+	定理环境实际上是一类环境，在使用前需要在导言区进行定义：
+
+\begin{lstlisting}
+\newtheorem{thm}{定理}
+\end{lstlisting}
+	
+	这样我们就得到了一个名为thm的定理类环境，
 	它在使用时会自动产生形如“定理1”的提示。
 	用同样的方法我们还可以定义引理、公理等。
 	有时候我们希望定理的编号包含章节号，
 	可在定义时增加参数即可：
-	
-	\verb|\newtheorem{thm}{定理}[section]|
+
+\begin{lstlisting}
+\newtheorem{thm}{定理}[section]
+\end{lstlisting}
 	
 	定理环境还可以有一个可选参数，即定理的名字。
 	下面给出这个环境的使用示例：
 	
 	\begin{thm}[勾股定理]
 		直角三角形斜边的平方等于两直角边的平方和。
-	\end{thm}
+	\end{thm}	
+
+	ntheorem宏包扩充了定理类环境的格式，
+	在导言区使用\verb|\theoremstyle{<格式>}|可以方便地选择格式。
+	可用的预定义格式如表\ref{tab:thmstyle} 所示。
 	
-	表格环境table和图片环境figure均为浮动环境。
-	与一般的环境不同，
-	浮动环境可以根据文档的内容改变位置。
-	在使用浮动环境时可利用可选参数h、t、b、p的组合来指明允许的浮动位置。
-	其中：h表示代码中与前后文关系不变的位置；
-	t表示当前页面的顶端；
-	b表示当前页面的底端；
-	p表示下一页。
+	\begin{table}
+		\centering
+		\caption{定理类环境格式}
+		\label{tab:thmstyle}
+		\begin{tabular}{ll}
+			\toprule
+			格式 & 说明 \\
+			\midrule
+			plain & 默认格式 \\
+			break & 定理头换行 \\
+			marginbreak & 编号在页边，定理头换行 \\
+			changebreak & 定理头编号在前文字在后，换行 \\
+			change & 定理头编号在前文字在后，不换行 \\
+			margin & 编号在页边，定理头不换行 \\
+			nonumberplain & 同plain格式，没有编号 \\
+			nonumberbreak & 同break格式，没有编号 \\
+			empty & 没有编号和定理名，只输出可选参数 \\
+			\bottomrule
+		\end{tabular}
+	\end{table}
 	
+	该宏包具有很多设置命令和辅助功能，
+	比如在使用该宏包时添加\verb|[thmmarks]|选项后，
+	可以使用\verb|\theoremsymbol|命令在定理类环境末尾添加符号，
+	这对定义证明环境表示证毕符号非常有用：
 	
+\begin{lstlisting}
+% 导言区
+\usepackage[thmmarks]{ntheorem}
+{	% 利用分组使设置只对该分组内的定理类有效
+	\theoremstyle{nonumberplain}
+	\theoremheaderfont{\bfseries}
+	\theorembodyfont{\normalfont}
+	\theoremsymbol{\ensuremath{\Box}}
+	\newtheorem{proof}{证明}
+}
+\end{lstlisting}
 	
-	\section{编写文档}
-	\subsection{段落间距}
-	\subsection{内容强调}
+	这样，使用该定理类将会出现下面的效果：
+	
+	\begin{proof}
+		当$x>0$时，将$\mathrm{e}^x$进行泰勒展开，有
+		
+		\[
+			\mathrm{e}^x = \sum_{k=0}^{+\infty} \frac{x^k}{k!} 
+			>\sum_{k=0}^{n} \frac{x^k}{k!}=P_n(x)
+		\]
+		
+		证毕。
+	\end{proof}
+	
 	\subsection{添加列表}
-	\subsection{绘制表格}
-	\subsection{插入图片}
+	\LaTeX 标准文档类提供了三种列表环境：
+	带编号的enumerate环境、
+	不编号的itemize环境
+	和使用关键字的description环境。
+	在列表环境内部使用\verb|\item|命令开始一个新的列表项，
+	它可以带一个可选参数表示手动编号或关键字。
+	
+	这三种列表环境可以嵌套使用（最多四层），
+	\LaTeX 会自动处理不同层次之间的缩进编号，
+	例如：
+	
+	\begin{enumerate}
+		\item 使用enumerate环境直接用\verb|\item|产生一个列表项
+		\item[1b.] 使用\verb|\item[1b.]|测试手动编号
+		\item 这里恢复正常的使用方法，并引入一次itemize嵌套
+		\begin{itemize}
+			\item 嵌套的第一层默认编号
+			\item[\dag] 使用\verb|\item[\dag]|修改符号
+			\item 恢复到默认设置
+		\end{itemize}
+	\end{enumerate}
+		
+	\subsection{使用图表}
+	%	表格环境table和图片环境figure均为浮动环境。
+	%	与一般的环境不同，
+	%	浮动环境可以根据文档的内容改变位置。
+	%	在使用浮动环境时可利用可选参数h、t、b、p的组合来指明允许的浮动位置。
+	%	其中：h表示代码中与前后文关系不变的位置；
+	%	t表示当前页面的顶端；
+	%	b表示当前页面的底端；
+	%	p表示下一页。
+
+
 	\subsection{数学公式}
+	\AmS 相关宏包提供了很好的数学支持，
+	这些宏包包括：amsmath、amsfonts、amssymb。
+	
+%	公式编号往往需要带上章节号，
+%	在导言区添加\verb|\numberwithin{equation}{section}|来实现。
+	
 	\subsection{插入代码}
+	\LaTeX 输入特殊符号时不太便利，
+	然而有时候我们必须经常性地使用特殊符号，
+	例如在排版计算机程序源代码的时候。
+	此时需要使用抄录功能。
+	
+	使用命令\verb|\verb<符号><抄录内容><符号>|
+	可以将抄录内容原封不动地输出到正文中，
+	两端的符号可以任意给定，但是要确保相同。
+	例如\verb~\verb|\TeX|~采用“|”作为边界。
+	
+	在插入大段代码时，可以使用listings宏包提供的lstlisting环境。
+	但是直接使用往往得不到很好的效果，
+	通常我们需要在导言区使用\verb|\lstset|进行设置。
+	例如本文的设置如下：
+
+\begin{lstlisting}
+% 导言区
+\usepackage{listings}
+\usepackage{listings}
+\lstset{ % 代码环境整体设置
+	basicstyle = \ttfamily,
+	keywordstyle = \bfseries,
+	commentstyle = \rmfamily\upshape,
+	stringstyle = \ttfamily\slshape,
+	tabsize = 4,
+	backgroundcolor = \color{lightgray},	% 需先引入颜色宏包
+	frame = single,
+	language = TeX							% 设置默认语言
+}
+\end{lstlisting}
+	
+	需要说明的是，lstlisting环境对缩进是敏感的。
+	这就是说，从\verb|\begin{lstlisting}|开始的缩进都将进入正文。
+	该环境还可以使用可选参数，
+	对环境进行临时修改。
+	为了使代码根据不同语言实现高亮，
+	可以在使用该环境使添加可选参数language进行设置，
+	例如上面的例子就引入了参数\verb|[language=TeX]|。
+	
 	\subsection{插入引用}
+	最简单的引用便是使用\verb|\footnote{<脚注内容>}|产生脚注，
+	例如这个位置\footnote{这是一个脚注的例子}。
+	脚注是自动编号的，也可以使用可选参数修改编号，
+	但是这不改变原来脚注的编号。
+	
+	在例如表格等环境中，\verb|\footnote|命令往往不能直接使用。
+	这时我们可以把脚注标记和脚注内容分开\footnotemark，
+	这两条命令分别为
+	\verb|\footnotemark|和\verb|\footnotetext{<脚注内容>}|。
+	\footnotetext{这又是一个脚注}
+	
+	\LaTeX 默认的脚注格式不太好看，
+	我们可以在导言区进行以下设置进行优化。
+	
+\begin{lstlisting}
+\usepackage[perpage]{footmisc}		% 脚注每页清零
+\usepackage{pifont}					% 优化带圈的数字
+\renewcommand{\thefootnote}{\ding{\numexpr171+\value{footnote}}}
+\end{lstlisting}
+	
+	交叉引用可以通过一个符号标签引用文档中某个对象的
+	编号、页码、或标题等信息，
+	而不必知道这个对象具体在什么位置。
+	我们需要两个步骤来实现交叉引用：
+	定义标签和引用标签。
+	
+	定义标签是在合适的位置给一个带参数的对象添加标签，
+	命令为\verb|\label{<标签>}|。
+	标签的名字最好是简洁而有用的名字，
+	不能包含特殊字符。
+	标签的位置常在\verb|\section|命令之后；
+	或table和figure环境中\verb|\caption|命令之后；
+	也可以在公式之后。
+	
+	创建标签后，可分别使用
+	\verb|\ref|、\verb|\pageref|、\verb|\nameref|
+	引用标签对象的计数、所在页码和名称。
+	对于公式的引用，通常会给编码加上英文括号，
+	好在 \AmS 的宏包在支持数学的基础上
+	增加了命令\verb|\eqref|专门用于公式引用，
+	所以公式的引用会略有不同。
+	
+	例如，我们使用下面的代码进行交叉引用的测试：
+
+\begin{lstlisting}
+% 前面已使用 \label{tab:ctexopt} 定义标签
+表 \ref{tab:ctexopt} 在第 \pageref{tab:ctexopt} 页，
+名字是 \nameref{tab:ctexopt}。
+\end{lstlisting}
+	
+	输出为：表 \ref{tab:ctexopt} 在第 \pageref{tab:ctexopt} 页，
+	名字是 \nameref{tab:ctexopt}。
+	
+	细心的朋友对比后会发现，
+	\verb|\tableofcontents|生成的目录不是超级链接，
+	而且编译生成的pdf文档中不会出现标签。
+	为了解决这个问题，
+	可以使用hyperref宏包。
+	据了解\cite{liuhaiyang}，
+	hyperref宏包可以算是 \LaTeX 中最为复杂的宏包之一。
+	它提供了大量的选项和命令，
+	能够完成各种设置和功能。
+	但限于本人的水平，在此不做说明。
+	需要指出的是，在中文文档中，
+	直接使用\verb|\usepackage{hyoerref}|可能会出现乱码，
+	解决这个问题的方式只需要在申明文档类时加上可选项即可，
+	如下
+	
+\begin{lstlisting}
+% 导言区
+\documentclass[hyperref,UTF8]{ctexart}
+\end{lstlisting}
+	
+	同时，该宏包还提供了命令
+	\verb|\url{<URL>}|和\verb|\href{<URL>}{文字}|
+	产生超级链接。
+	比如，这里我可以班门弄斧一下
+	\href{https://ichunyu.github.io}{我的博客}。
+	
+	除了上面这些引用，
+	科技类文档中最重要的引用就是文献引用了。
+	这类引用首先需要一个数据库文件，
+	其通常以bib为后缀。
+	该文件由多项参考文献构成，
+	这里给出其中的一个例子：
+	
+\begin{lstlisting}
+@article{canuto_embedded_2018,
+title = {Embedded model control: {Reconciling} modern control theory and error-based control design},
+volume = {16},
+issn = {2198-0942},
+shorttitle = {Embedded model control},
+url = {https://doi.org/10.1007/s11768-018-8130-1},
+doi = {10.1007/s11768-018-8130-1},
+language = {en},
+number = {4},
+urldate = {2019-07-16},
+journal = {Control Theory and Technology},
+author = {Canuto, Enrico and Novara, Carlo and Colangelo, Luigi},
+month = nov,
+year = {2018},
+keywords = {embedded model control, disturbance rejection, error loop, error-based design, Modern control theory},
+pages = {261--283}
+}
+\end{lstlisting}
+	
+	通常情况下bib文件不需要我们手动编写，
+	文献检索网站和各种文献管理软件一般都支持这种BibTeX格式的导出。
+	
+	文献的引用需要以下三个步骤：
+	
+	\begin{enumerate}
+		\item 使用\verb|\bibliographystyle|命令设定参考文献的格式，
+		这通常在导言区完成。基本的文献格式有：
+		plain --- 按作者、日期、标题排序；
+		unsrt --- 不排序但保持引用次序；
+		alpha --- 使用一种三字母缩写的方式编号并按作者排序；
+		abbrv --- 与plain基本相同，但是定义了一些缩写。
+		
+		\item 在正文中使用\verb|\cite|命令引用所需要的文献，
+		当引用多个文献时用逗号隔开。
+		
+		\item 使用\verb|\bibliography|命令指明要使用的文献数据库，
+		即包含文献信息的bib文件。
+		同时， \LaTeX 会在这个命令的位置插入参考文献列表。
+	\end{enumerate}
+
+	例如，使用以下命令进行文献引用：
+
+\begin{lstlisting}
+Canuto教授提出了一种模型嵌入控制\cite{canuto_embedded_2018}。
+\end{lstlisting}
+	
+	其效果为：Canuto教授提出了一种模型嵌入控制\cite{canuto_embedded_2018}。
+	参考文献列表见本文末尾。
+	
+	默认的文献样式不能满足所有出版社的要求，
+	这时我们可以使用natbib宏包进行修改。
+	该宏包同时定义三种专用的格式：
+	plainnat、abbrvnat、unstrnat。
+	
+	natbib宏包提供了\verb|\setcitestyle|命令来设置引用命令的输出格式，
+	在参数中可以设置以下选项：
+	
+	\begin{itemize}
+		\item 选择引用模式：
+		authoryear代表作者年代模式，如[Canuto,2018];
+		numbers表示数字序号模式，如[3];
+		super表示数字上标模式，如${}^{[64]}$。
+		
+		\item 括号：
+		round圆括号，
+		square方括号，
+		或是用\verb|open={<左括号>}|和\verb|close={<右括号>}|
+		分别进行设置。
+		
+		\item 多个引用之间的标点：
+		semicolon分号，comma逗号，
+		或是用\verb|citesep={<符号>}|进行设置。
+		
+		\item 作者与年代之间的符号：\verb|aysep={<符号>}|。
+		
+		\item 同一作者的几个年代间的符号\verb|yysep={<符号>}|。
+		
+		\item 在引用命令可选参数的说明文字前的符号\verb|notesep={<符号>}|。
+	\end{itemize}
+
+	简单起见，我们可以在使用宏包时添加选项来快速修改格式，如下：
+	
+\begin{lstlisting}
+\usepackage[super,square]{natbib}
+\end{lstlisting}
+	
 	\subsection{使用颜色}
-	\subsection{页面控制}
+	
 	
 	\section{使用模板}
 	
