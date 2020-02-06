@@ -1,5 +1,5 @@
 % =============== 导言区 ===============
-\documentclass[hyperref,UTF8]{ctexart}
+\documentclass{ctexart}
 
 % 设置页边距的宏包
 \usepackage{geometry}
@@ -17,6 +17,9 @@
 %	aftername = {\hspace{2ex}}
 %	]{section}
 
+% 目录和超级链接
+\usepackage{hyperref}
+
 % AMS数学包
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -26,8 +29,8 @@
 % XeLaTeX logo
 \usepackage{metalogo}	
 
-% 使用颜色
-\usepackage{xcolor}
+% 使用颜色并添加预定义名和表格支持
+\usepackage[dvipsnames,table]{xcolor}
 
 % 支持语法高亮的代码环境：lstlisting
 \usepackage{listings}
@@ -50,12 +53,9 @@
 % 图表宏包
 \usepackage{graphicx}			% 插图宏包\includegraphics
 \usepackage{tabularx}			% 定宽表格
-
-% 三线表宏包
-% 顶部粗线: \toprule
-% 中间细线: \midrule, \cmidrule{a-b}
-% 底部粗线: \bottomrule
-\usepackage{booktabs}
+\usepackage{multirow}			% 合并行
+\usepackage{booktabs}			% 三线表
+\usepackage{float}				% 图表浮动体控制
 
 % 参考文献宏包
 \usepackage[super,square]{natbib}
@@ -70,8 +70,6 @@
 	\theoremsymbol{\ensuremath{\Box}}
 	\newtheorem{proof}{证明}
 }
-
-
 
 % 定义四元数乘法的简写
 \newcommand{\quadprod}[2]
@@ -108,10 +106,9 @@
 		
 		\vspace{\stretch{3}}
 		
-		{\noindent 
-			\textsl{Email}: 
-			\href{mailto:chunyu2018@foxmail.com}
-				{chunyu2018@foxmail.com}
+		{\noindent\slshape Email: 
+		 \href{mailto:chunyu2018@foxmail.com}
+			{chunyu2018@foxmail.com}
 		}
 	\end{titlepage}
 
@@ -136,7 +133,7 @@
 	记录将常用的基本操作以便后期查阅，
 	同时也为感兴趣的小伙伴们做一个粗略的介绍。
 	
-	本人学习时安装的发行版为 \TeX~Live，		% ~为空格
+	本人学习时安装的发行版为 \TeX~Live，
 	对于不知道如何入门的小伙伴，
 	我同样推荐这个发行版，
 	它避免了很多繁琐的配置。
@@ -469,7 +466,7 @@
 \setcounter{page}{1}		% 正文重新开始于1
 \end{lstlisting}
 	
-	\begin{table}
+	\begin{table}[hbp]
 		\centering
 		\caption{页码数字格式}
 		\label{tab:pagenum}
@@ -637,18 +634,286 @@
 			\item 恢复到默认设置
 		\end{itemize}
 	\end{enumerate}
-		
-	\subsection{使用图表}
-	%	表格环境table和图片环境figure均为浮动环境。
-	%	与一般的环境不同，
-	%	浮动环境可以根据文档的内容改变位置。
-	%	在使用浮动环境时可利用可选参数h、t、b、p的组合来指明允许的浮动位置。
-	%	其中：h表示代码中与前后文关系不变的位置；
-	%	t表示当前页面的顶端；
-	%	b表示当前页面的底端；
-	%	p表示下一页。
+	
+	\subsection{使用颜色}
+	可以利用xcolor宏包在文档中使用颜色。
+	基本的命令包括声明式命令\verb|\color{<颜色>}|
+	和带参数的命令\verb|\textcolor{<颜色>}{<文字>}|。
+	前者对后面的内容都生效，
+	而后者仅将参数部分的文字按指定的颜色输出。
+	例如：
+	
+\begin{lstlisting}
+{	% 使用分组，避免对后文上色
+	\bfseries\color{red}		
+	这是一段夹杂\textcolor{blue}{蓝色字符}的红色段落。
+}
+\end{lstlisting}
+	
+	{	% 使用分组，避免对后文上色
+		\bfseries\color{red}		
+		这是一段夹杂\textcolor{blue}{蓝色字符}的红色段落。
+	}
 
+	除了对文字上色，我们也能够对文字的“背景”进行上色。
+	这用到所谓的“盒子”的功能，
+	基本语法如下：
+	
+	\begin{quote}
+		\verb|\pagecolor{<页面颜色>}| \\
+		\verb|\colorbox{<盒子颜色>}{<文字>}| \\
+		\verb|\fcolorbox{<线框颜色>}{<盒子颜色>}{<文字>}|
+	\end{quote}
+	
+	为了直接使用颜色名如blue来表示颜色，
+	可以在使用xcolor宏包时添加dvipsnames选项来扩充预定义的颜色名。
+	除此之外，我们还有两种方式来定义新的颜色：
+	
+	\begin{quote}
+		\verb|\definecolor{<色彩名>}{<模型>}{<分量值>}| \\
+		\verb|\colorlet{<色彩名>}{<色彩标记>}|
+	\end{quote}
+	
+	其中，色彩名是指新定义的颜色的名字。
+	常用的颜色模型有：
+	gray（灰度）、rgb（红绿蓝）和cmyk（印刷四分色）。
+	xcolor提供了用已有颜色生成新颜色的色彩标记方法，
+	常用的有：
+	
+	\begin{quote}
+		\begin{tabular}{ll}
+			半色调： & \verb|<颜色>!<百分数>| \\
+			混合色： & \verb|<颜色>!<百分数>!<颜色>| \\
+			互补色： & \verb|-<颜色>|
+		\end{tabular}
+	\end{quote}
+	
+	下面给出一些实例供参考：
+	
+\begin{lstlisting}
+\begin{quote}
+	\bfseries
+	\textcolor{Blue!80}{80\%的蓝色} \\
+	\textcolor{Red!60!Cyan}{60\%的红色加40\%的青色} \\
+	\colorbox{Green}{\textcolor{-Green}{绿色背景与互补色文字}}
+\end{quote}
+\end{lstlisting}
+	
+	产生的效果为：
+	
+	\begin{quote}
+		\bfseries
+		\textcolor{Blue!80}{80\%的蓝色} \\
+		\textcolor{Red!60!Cyan}{60\%的红色加40\%的青色} \\
+		\colorbox{Green}{\textcolor{-Green}{绿色背景与互补色文字}}
+	\end{quote}
+	
+	\subsection{使用图表}	
+	\LaTeX 支持直接使用代码绘图，
+	但这通常非常复杂。
+	更常用的操作是利用其他软件绘图，
+	然后将图片插入到文档之中。
+	graphicx宏包提供了
+	\verb|\includegraphics|命令来实现插图。
+	通常情况下，
+	我们会把插图单独放在figure环境中。
+	例如，图 \ref{fig:railgun} 采用了以下代码：
+	
+\begin{lstlisting}
+\begin{figure}[hbp]
+	\centering
+	\includegraphics[width=0.5\textwidth]{figure/mywife1.jpg}
+	\caption{某春雨的超电磁炮}
+	\label{fig:railgun}
+\end{figure}
+\end{lstlisting}
+	
+	\begin{figure}[hbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{figure/mywife1.jpg}
+		\caption{某春雨的超电磁炮}
+		\label{fig:railgun}
+	\end{figure}
+	
+	从这个代码就可以看出，
+	进入环境之后首先设置了在环境中生效的居中命令；
+	通常情况下图片的名字在图片下面，
+	所以先用\verb|\includegraphics|命令插入图片，
+	并通过可选参数设置图片的宽度
+	\footnote{常用选项有：宽度width、高度heigh和缩放比例scale}；
+	再由\verb|\caption|生成标题；
+	考虑到需要使用的交叉引用，
+	接着用\verb|\label|打上标签。
+	应当注意的是，
+	为了产生正确的交叉引用，
+	标签应当在\verb|\caption|命令之后。
+	
+	同样地，为了使用表格，
+	可以使用在table环境中嵌套tabular环境。
+	除此接触的小伙伴们可能会好奇，
+	为什么制作表格还需要两层嵌套，
+	而且这两个环境从含义上看来并没有很大的区别。
+	我们可以这样认为：
+	tabular环境用来制作表格，
+	而table环境用来指明表格在文档中的位置。
 
+	例如，表 \ref{tab:pagenum} 的代码如下：
+	
+\begin{lstlisting}
+\begin{table}[hbp]
+	\centering
+	\caption{页码数字格式}
+	\label{tab:pagenum}
+	\begin{tabular}{ll}
+		\toprule
+		格式 & 说明 \\
+		\midrule
+		arabic & 阿拉伯数字 \\
+		roman & 小写的罗马数字 \\
+		Roman & 大写的罗马数字 \\
+		alph & 小写的字符形式 \\
+		Alph & 大写的字符形式 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+\end{lstlisting}
+
+	首先我们来分析这个代码：
+	我们在最外围申明了表格所处的table环境；
+	然后设置该环境下内容居中显示；
+	由于表格的标题一般在表格上方，
+	所以先生成标题并打上标签；
+	剩下的一大块便是由tabular环境构造的表格。
+	
+	然后我们讨论下tabular环境的使用方法：
+	该环境有一个参数用来指明列格式，
+	常用的列格式包括：
+	
+	\begin{itemize}
+		\item \verb|l| --- 本列左对齐。
+		\item \verb|c| --- 本列居中。
+		\item \verb|r| --- 本列右对齐。
+		\item \verb|p{<列宽>}| --- 指定列宽并允许自动换行。
+		\item \verb=|= --- 画一条竖线，不占据表项计数。
+		\item \verb|@{<内容>}| --- 任意添加内容，不占表项计数。
+		\item \verb|*{<计数>}{<列格式说明>}| --- 将给定列格式按计数重复多次
+	\end{itemize}
+
+	在表内，采用符号\&指明对齐位置，
+	并使用 \textbackslash\textbackslash 进行换行。
+	表格中可以使用\verb|\hline|绘制横线，
+	或使用\verb|\cline{<开始>-<结束>}|指定横线的范围。
+	本文引用了booktabs宏包产生三线表的横线，
+	可使用命令
+	\verb|\toprule|、\verb|\midrule|、\verb|\bottomrule|
+	分别绘制顶部横线、中间横线和底部横线。
+	为了像\verb|\cline|那样绘制指定位置的横线，
+	该宏包还提供了\verb|\cmidrule|命令。
+	表格中绘制与单元格等高的竖线可用\verb|\vline|命令。
+	
+	在不单独指定列宽的情况下，
+	tabular环境可以根据内容自动改变表格宽度，
+	这在绝大多数情况下是非常好用的。
+	然而有时候我们希望指定表格的总宽度，
+	这就需要tabularx宏包提供的tabularx环境。
+	该环境在指定列格式之前必须指定表格的总宽度。
+	同时，该宏包提供了一个特殊的列格式X，
+	它能够根据表的内容自动改变列宽，
+	也可以和其他列格式一起使用。
+	
+	由于X格式默认是左对齐的，
+	如果需要居中则需要\verb|\centering|进行设置。
+	然而这个命令会影响单元格内的自动换行，
+	需要加上命令\verb|\arraybackslash|进行恢复。
+	如果这种格式比较常用，
+	我们可以利用下面的命令自定义一个新的列样式。
+	
+\begin{lstlisting}
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+\end{lstlisting}
+	
+	有时表格需要用到单元格合并，
+	对于列合并，可以直接使用下面的代码实现。
+
+\begin{lstlisting}
+\multicolumn{<列数>}{<列格式>}{<内容>}
+\end{lstlisting}
+
+	列合并的项数可以为1，
+	常用于修改指定单元格的格式。
+	表格的行合并相对复杂，
+	需要利用multirow环境的同名命令，
+	该命令的用法如下：
+	
+\begin{lstlisting}
+\multirow{<行数>}{<列宽>}{<内容>}
+\multirow{<行数>}*{<内容>}
+\end{lstlisting}
+	
+	前一种格式会在内容达到指定列宽后自动换行，
+	后一种格式会自动修改列宽，更为常用。
+	
+	如果在使用颜色宏包xcolor时添加table选项，
+	就可以在表格中使用颜色。
+	使用方法如表 \ref{tab:tabcolor} 所示。
+	
+	\begin{table}[hbp]
+		\centering
+		\caption{彩色表格的常用命令}
+		\label{tab:tabcolor}
+		\rowcolors{1}{SkyBlue!40}{Melon!40}
+		\begin{tabular}{lll}
+			命令 & 作用 & 常用位置 \\
+			\verb|\columncolor{<颜色>}| & 改变列的颜色
+				& \verb|>{<...>}|列格式说明符 \\
+			\verb|\rowcolor{<颜色>}| &  改变行的颜色
+				& 表格某一行的开头 \\
+			\verb|\cellcolor{<颜色>}| & 改变单元格颜色
+				& 单元格内 \\
+			\verb|\rowcolors{<起始行>}{<奇数色>}{<偶数色>}|
+				& 产生颜色交错的表格 & tabular等环境之前 \\
+		\end{tabular}
+	\end{table}
+	
+	以上介绍了插图和制表的基本命令，
+	现在我们再来讨论下figure和table环境。
+	细心的小伙伴一定发现上面两个例子在使用环境时
+	均添加了\verb|[hbp]|的可选参数，
+	这是什么意思呢？
+	
+	对于其他的环境，
+	例如插入代码所使用的lstlisting环境，
+	它在排版时保持了前后文相对关系不变，
+	因而是固定的。
+	而figure环境和table环境都是所谓的浮动体，
+	它会根据当前页面的内容自动设置位置，
+	从而避免页面出现大片的空白
+	或图表超出页面范围。
+	这两个环境的可选参数代表环境内容可以出现的位置，
+	它们分别代表：
+	
+	\begin{itemize}
+		\item \textbf{h} （here），浮动体可以放置在代码所在的上下文位置。
+		\item \textbf{t} （top），浮动体可以放置在页面顶部，
+			这可以是当前页面或下一页，
+			当前页面排版时可能会出现在实际代码之前。
+		\item \textbf{b} （bottom），浮动体可以放置在页面底部。
+		\item \textbf{p} （page）一个或多个浮动体放置在单独的页面。
+	\end{itemize}
+
+	浮动体的允许位置可以由h、t、b、p任意组合，
+	组合顺序不影响排版效果。
+	figure和table的默认选项是\verb|[tbp]|。
+	浮动体其他的一些预设值可能会限制浮动体内容出现的位置，
+	可以在选项中使用！来临时取消预设值，
+	如将可选参数设为\verb|[!htb]|。
+	
+	如果浮动体的自动排版达不到理想的效果，
+	可以用float宏包对其进行设置。
+	该宏包提供了一个新的位置选项H，
+	它只能单独使用，
+	其功能是取消环境的浮动。
+	
 	\subsection{数学公式}
 	\AmS 相关宏包提供了很好的数学支持，
 	这些宏包包括：amsmath、amsfonts、amssymb。
@@ -754,15 +1019,8 @@
 	\verb|\tableofcontents|生成的目录不是超级链接，
 	而且编译生成的pdf文档中不会出现标签。
 	为了解决这个问题，
-	可以使用hyperref宏包。
-	据了解\cite{liuhaiyang}，
-	hyperref宏包可以算是 \LaTeX 中最为复杂的宏包之一。
-	它提供了大量的选项和命令，
-	能够完成各种设置和功能。
-	但限于本人的水平，在此不做说明。
-	需要指出的是，在中文文档中，
-	直接使用\verb|\usepackage{hyoerref}|可能会出现乱码，
-	解决这个问题的方式只需要在申明文档类时加上可选项即可，
+	只需要使用hyperref宏包。
+	或者在申明文档类时加上可选项，
 	如下
 	
 \begin{lstlisting}
@@ -771,7 +1029,7 @@
 \end{lstlisting}
 	
 	同时，该宏包还提供了命令
-	\verb|\url{<URL>}|和\verb|\href{<URL>}{文字}|
+	\verb|\url{<URL>}|和\verb|\href{<URL>}{<文字>}|
 	产生超级链接。
 	比如，这里我可以班门弄斧一下
 	\href{https://ichunyu.github.io}{我的博客}。
@@ -785,7 +1043,8 @@
 	
 \begin{lstlisting}
 @article{canuto_embedded_2018,
-title = {Embedded model control: {Reconciling} modern control theory and error-based control design},
+title = {Embedded model control: {Reconciling} 
+	modern control theory and error-based control design},
 volume = {16},
 issn = {2198-0942},
 shorttitle = {Embedded model control},
@@ -798,7 +1057,8 @@ journal = {Control Theory and Technology},
 author = {Canuto, Enrico and Novara, Carlo and Colangelo, Luigi},
 month = nov,
 year = {2018},
-keywords = {embedded model control, disturbance rejection, error loop, error-based design, Modern control theory},
+keywords = {embedded model control, disturbance rejection,
+	error loop, error-based design, Modern control theory},
 pages = {261--283}
 }
 \end{lstlisting}
@@ -869,12 +1129,12 @@ Canuto教授提出了一种模型嵌入控制\cite{canuto_embedded_2018}。
 \begin{lstlisting}
 \usepackage[super,square]{natbib}
 \end{lstlisting}
+		
+	\section{写在后面}
+	\subsection{宏包汇总}
 	
-	\subsection{使用颜色}
-	
-	
-	\section{使用模板}
-	
+	\subsection{使用模板}
 	
 	\bibliography{ref}
+	
 \end{document}
