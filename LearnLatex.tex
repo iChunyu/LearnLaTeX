@@ -17,8 +17,9 @@
 %	aftername = {\hspace{2ex}}
 %	]{section}
 
-% 目录和超级链接
-\usepackage{hyperref}
+% 目录和超链接
+\usepackage{tocbibind}			% 添加参考文献到目录
+\usepackage{hyperref}			% 构造引用超链接
 
 % AMS数学包
 \usepackage{amsmath}
@@ -75,6 +76,7 @@
 \newcommand{\quadprod}[2]
 	{\ensuremath{\mathfrak{#1} \otimes \mathfrak{#2}}}
 
+% 设置参考文献按引用顺序排序
 \bibliographystyle{unsrtnat}
 
 % 采用titlepage自定义页面，以下信息可注释
@@ -84,7 +86,6 @@
 
 % =============== 正文区 ===============
 \begin{document}
-
 %	\maketitle	% 由titlepage代替：自定义封面
 	\begin{titlepage}
 		\zihao{4}	% 设置封面采用四号字
@@ -99,8 +100,8 @@
 			\begin{tabular}{rr}
 				作者 & XiaoCY \\
 				版本 & 1.0 \\
-				完成日期 & 2020-02-04 \\
-				最后修改 & 2020-02-04
+				完成日期 & 2020-02-06 \\
+				最后修改 & 2020-02-06 \\
 			\end{tabular}
 		\end{flushright}
 		
@@ -164,7 +165,7 @@
 	在正文区内，我们只需要输入文档的正文即可。
 	编辑器内部的各种换行不会引起排版后文档的换行，
 	中 文 文 档 的 多 余 空 格 也 不 会 在 文 档 中 出 现。 \par
-	文字换行可用双斜线\verb|\\| 实现，
+	文字换行可用双斜线\verb|\\|实现，
 	而换段则采用空行的形式，或者使用命令\verb|\par|。
 	tex文件内的多个空行或多个\verb|\par|不会在正文引起多余的空行。
 	换行和换段的区别是：
@@ -225,7 +226,7 @@
 	\LaTeX 提供了各种命令来对字体进行修改。
 	命令和效果如表 \ref{tab:fontcoord} 所示。
 	
-	\begin{table}
+	\begin{table}[hbp]
 		\centering
 		\caption{字体的坐标}
 		\label{tab:fontcoord}
@@ -277,7 +278,7 @@
 	ctex宏包和文档类还增加了各种文字强调的方式，
 	命令和效果如表\ref{tab:fontemph} 所示。
 	
-	\begin{table}
+	\begin{table}[hbp]
 		\centering
 		\caption{文字强调}
 		\label{tab:fontemph}
@@ -303,7 +304,7 @@
 		\begin{tabular}{ll}
 			无参数： & \verb|\command| \\
 			有n个参数： & \verb|\command{<arg1>}{<arg2>}...{<argn>}| \\
-			有可选参数： & \verb|\command[<opt>]{<arg1>}{<arg2>}...{<argn>}| 
+			有可选参数： & \verb|\command[<opt>]{<arg1>}{<arg2>}...{<argn>}| \\
 		\end{tabular}
 	\end{quote}
 
@@ -449,6 +450,8 @@
 	类似地，命令\verb|\listoffigures|和\verb|\listoftables|
 	会分别收集figure和table中\verb|\caption|命令的图表标题，
 	产生图表的目录。
+	为了将参考文献加入到目录中，
+	可以使用tocbibind宏包。
 	
 	目录部分的页码常用大写的罗马数字表示，
 	这可以使用命令\verb|\pagenumbering{<格式>}|进行修改，
@@ -466,7 +469,7 @@
 \setcounter{page}{1}		% 正文重新开始于1
 \end{lstlisting}
 	
-	\begin{table}[hbp]
+	\begin{table}[hbt]
 		\centering
 		\caption{页码数字格式}
 		\label{tab:pagenum}
@@ -684,7 +687,7 @@
 		\begin{tabular}{ll}
 			半色调： & \verb|<颜色>!<百分数>| \\
 			混合色： & \verb|<颜色>!<百分数>!<颜色>| \\
-			互补色： & \verb|-<颜色>|
+			互补色： & \verb|-<颜色>| \\
 		\end{tabular}
 	\end{quote}
 	
@@ -917,9 +920,126 @@
 	\subsection{数学公式}
 	\AmS 相关宏包提供了很好的数学支持，
 	这些宏包包括：amsmath、amsfonts、amssymb。
+	针对数学公式的编辑在此不过多解释，
+	有条件的小伙伴们可以在MathType中编辑，
+	并设置其复制选项为AMSLaTeX代码。
 	
-%	公式编号往往需要带上章节号，
-%	在导言区添加\verb|\numberwithin{equation}{section}|来实现。
+	行内公式可以用美元符号表示，
+	如\verb|$\frac{1}{2}$|的效果为$\frac{1}{2}$,
+	\AmS 宏包会自动根据行内公式对字符进行调整。
+	
+	\AmS 宏包提供了很多环境用于在行间显示数学公式，
+	这里仅对一些常用的环境进行介绍。
+	其中，行间公式通常需要编号，
+	且编号往往会带上章节号，
+	这只需要在导言区添加\verb|\numberwithin{equation}{section}|即可。
+	
+	align环境提供了公式居中，编号靠右的默认格式，
+	这也是一般科技文档的要求。
+	当在该环境内编辑多行公式时，
+	可使用\verb|&|指明对齐位置，
+	并使用\verb|\\|进行换行。
+	该环境默认对每一行公式进行编号，
+	因此可以在每行公式后面为公式打上标签。
+	如果不需要对公式进行编号，
+	可使用\verb|\notag|取消编号。
+	如果公式都不需要编号，
+	可以使用align*环境。
+	% 行间公式不需要空行来换行，否则会有多余空行
+	\begin{align}
+		{m_1}{{\ddot \vec r}_1} &=  
+			-G\frac{{{m_1}{m_2}}}{{r_{12}^2}}\frac{{{{\vec r}_{21}}}}
+			{{{r_{12}}}} 	\label{eq:r1}  \\
+		{m_2}{{\ddot \vec r}_2} &=  
+			- G\frac{{{m_1}{m_2}}}{{r_{12}^2}}\frac{{{{\vec r}_{12}}}}
+			{{{r_{12}}}} 	\label{eq:r2}
+	\end{align}
+	
+	观察这个示例公式，
+	我们发现它们是同一类的，
+	更好的表示方法是使它们具有相同的主编号，
+	而增加子编号进行区分。
+	这可以在align环境外嵌套subequations环境实现，如：
+	
+\begin{lstlisting}
+\begin{subequations}
+	\label{eq:rab}
+	\begin{align}		% 公式代码由MathType生成
+		{m_1}{{\ddot \vec r}_1} &=  
+			-G\frac{{{m_1}{m_2}}}{{r_{12}^2}}\
+			frac{{{{\vec r}_{21}}}}
+			{{{r_{12}}}} 	\label{eq:ra}  \\
+		{m_2}{{\ddot \vec r}_2} &=  
+			- G\frac{{{m_1}{m_2}}}{{r_{12}^2}}\
+			frac{{{{\vec r}_{12}}}}
+			{{{r_{12}}}} 	\label{eq:rb}
+	\end{align} 
+\end{subequations}
+\end{lstlisting}
+	% continue
+	\begin{subequations}
+		\label{eq:rab}
+		\begin{align}		% 公式代码由MathType生成
+			{m_1}{{\ddot \vec r}_1} &=  
+				-G\frac{{{m_1}{m_2}}}{{r_{12}^2}}\
+				frac{{{{\vec r}_{21}}}}
+				{{{r_{12}}}} 	\label{eq:ra}  \\
+			{m_2}{{\ddot \vec r}_2} &=  
+				- G\frac{{{m_1}{m_2}}}{{r_{12}^2}}\
+				frac{{{{\vec r}_{12}}}}
+				{{{r_{12}}}} 	\label{eq:rb}
+		\end{align} 
+	\end{subequations}
+
+	这样，我们可以分别用\verb|\eqref{eq:rab}|
+	引用主编号\eqref{eq:rab}，
+	也可以用\verb|\eqref{eq:ra}|引用子编号\eqref{eq:ra}。
+	
+	有时我们还会用多行公式展开推导的详细过程，
+	这时我们不仅希望公式按等号进行对齐，
+	还希望整个推导只占有一个编号。
+	这时可以使用split环境，
+	该环境的用法与align相同。例如：
+	
+\begin{lstlisting}
+\begin{align}
+	\label{eq:rc}
+	\begin{split}
+		{{\ddot \vec r}_C} &= \frac{{{m_1}}}{{{m_1} + {m_2}}}
+			{{\ddot \vec r}_1} + \frac{{{m_2}}}{{{m_1} + {m_2}}}
+			{{\ddot \vec r}_2} \\ 
+		&= \frac{1}{{{m_1} + {m_2}}}\left[ {\left( { - G
+			\frac{{{m_1}{m_2}}}{{r_{12}^2}}
+			\frac{{{{\vec r}_{21}}}}{{{r_{12}}}}} \right) + 
+			\left( { - G\frac{{{m_1}{m_2}}}{{r_{12}^2}}
+			\frac{{{{\vec r}_{12}}}}{{{r_{12}}}}} 
+			\right)} \right] \\ 
+		&= \frac{{ - G{m_1}{m_2}}}{{\left( {{m_1} + {m_2}}
+			\right)r_{12}^3}}\left( {{{\vec r}_{21}} + 
+			{{\vec r}_{12}}} \right) \\ 
+		&= \vec 0 
+	\end{split}
+\end{align}
+\end{lstlisting}
+	% continue
+	\begin{align}
+		\label{eq:rc}
+		\begin{split}
+			{{\ddot \vec r}_C} &= \frac{{{m_1}}}{{{m_1} + {m_2}}}
+			{{\ddot \vec r}_1} + \frac{{{m_2}}}{{{m_1} + {m_2}}}
+			{{\ddot \vec r}_2} \\ 
+			&= \frac{1}{{{m_1} + {m_2}}}\left[ {\left( { - G
+				\frac{{{m_1}{m_2}}}{{r_{12}^2}}
+				\frac{{{{\vec r}_{21}}}}{{{r_{12}}}}} \right) + 
+				\left( { - G\frac{{{m_1}{m_2}}}{{r_{12}^2}}
+				\frac{{{{\vec r}_{12}}}}{{{r_{12}}}}} 
+				\right)} \right] \\ 
+			&= \frac{{ - G{m_1}{m_2}}}{{\left( {{m_1} + {m_2}}
+				\right)r_{12}^3}}\left( {{{\vec r}_{21}} + 
+				{{\vec r}_{12}}} \right) \\ 
+			&= \vec 0 
+		\end{split}
+	\end{align}
 	
 	\subsection{插入代码}
 	\LaTeX 输入特殊符号时不太便利，
@@ -1130,11 +1250,53 @@ Canuto教授提出了一种模型嵌入控制\cite{canuto_embedded_2018}。
 \usepackage[super,square]{natbib}
 \end{lstlisting}
 		
-	\section{写在后面}
-	\subsection{宏包汇总}
+	\section{使用模板}
+	除了利用各种宏包修改格式编写自己的文档外，
+	以期刊文章为主的各类科技文档都可以找到相应的模板，
+	这些模板针对要求对格式进行了修改，
+	获得模板后基本可以直接使用。
 	
-	\subsection{使用模板}
+	需要注意的使，
+	一些模板为了使用上的方便，
+	重新定义了一些命令，
+	其使用方法可能略有差别。
+	不过这一般会在模板的使用说明中指明，
+	小伙伴们在使用模板前应当注意阅读使用说明。
+	
+	最后，祝大家学习愉快！
+	
+	Happy \LaTeX ing！
 	
 	\bibliography{ref}
 	
+%	\appendix
+%	\section{本文使用的宏包}
+%	\begin{table}
+%		\centering
+%		\caption{本文使用的宏包汇总}
+%		\label{tab:pkgs}
+%		\begin{tabular}{ll}
+%			\toprule
+%			宏包 & 说明 \\
+%			\midrule
+%			geometry & 页边距相关设置 \\
+%			hyperref & 使用超链接功能 \\
+%			tocbibind & 添加参考文献到目录 \\
+%			（\AmS 宏包） & 数学相关宏包：amsmath，amsfonts， amssymb  \\
+%			metalogo & \XeLaTeX 等logo \\
+%			xcolor & 颜色相关宏包 \\
+%			listings & 支持语法高亮的代码环境 \\
+%			footmisc & 脚注编号每页清零 \\
+%			pifont & 优化脚注带圆圈的数字 \\
+%			graphicx & 插图功能 \\
+%			tabularx & 定宽表格 \\
+%			multirow & 表格的行合并 \\
+%			booktabs & 三线表线型 \\
+%			float & 浮动体控制 \\
+%			natbib & 参考文献格式 \\
+%			ntheorem & 定理类格式 \\
+%			\bottomrule
+%		\end{tabular}
+%	\end{table}
+
 \end{document}
