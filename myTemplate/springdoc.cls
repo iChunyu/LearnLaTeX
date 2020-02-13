@@ -2,6 +2,13 @@
 
 \LoadClass{ctexart}
 
+\renewcommand{\title}[1]{\newcommand{\thetitle}{#1}}
+\renewcommand{\author}[1]{\newcommand{\theauthor}{#1}}
+\newcommand{\version}[1]{\newcommand{\theversion}{#1}}
+\newcommand{\finishdate}[1]{\newcommand{\thefinishdate}{#1}}
+\newcommand{\lastupdate}[1]{\newcommand{\thelastupdate}{#1}}
+\newcommand{\email}[1]{\newcommand{\theemail}{#1}}
+
 % 设置页边距的宏包
 \RequirePackage{geometry}
 \geometry{ % 设置整体页面格式
@@ -15,13 +22,18 @@
 % 页眉页脚
 \RequirePackage{fancyhdr}
 \pagestyle{fancy}
-\setlength{\headheight}{1cm}
+\setlength{\headheight}{1.5cm}
 \renewcommand{\headrule}
 {
 	\makebox[0pt][l]{\rule[1.15em]{\textwidth}{0.4pt}}%
 	\rule[1em]{\textwidth}{0.4pt}
-} 
+}
+\setlength{\headsep}{1em}
 \renewcommand{\footrulewidth}{0.4pt}
+\lhead{\kaishu\thetitle}
+\chead{}
+\rhead{\kaishu\leftmark}
+\cfoot{\thepage}
 
 % 目录和超链接
 \RequirePackage{tocbibind}					% 添加参考文献到目录
@@ -44,13 +56,13 @@
 \RequirePackage{listings}
 \lstset{ % 代码环境整体设置
 	basicstyle = \ttfamily,
-	keywordstyle = \bfseries,
-	commentstyle = \rmfamily\upshape,
-	stringstyle = \ttfamily\slshape,
+	keywordstyle = \color[rgb]{0.00,0.00,1.00},	% 需先引入颜色宏包
+	commentstyle = \color[rgb]{0.24, 0.46,0.24},
+	stringstyle = \color[rgb]{0.62,0.12,0.93},
 	tabsize = 4,
-	backgroundcolor = \color{lightgray},	% 需先引入颜色宏包
+	backgroundcolor = \color[rgb]{0.99,0.99,0.86},		
 	frame = single,
-	language = TeX							% 设置默认语言
+	language = Matlab						% 设置默认语言
 }
 
 % 优化脚注
@@ -69,13 +81,6 @@
 % 参考文献宏包
 \RequirePackage[super,square]{natbib}
 \bibliographystyle{unsrtnat}				% 设置参考文献按引用顺序排序
-
-\renewcommand{\title}[1]{\newcommand{\thetitle}{#1}}
-\renewcommand{\author}[1]{\newcommand{\theauthor}{#1}}
-\newcommand{\version}[1]{\newcommand{\theversion}{#1}}
-\newcommand{\finishdate}[1]{\newcommand{\thefinishdate}{#1}}
-\newcommand{\lastupdate}[1]{\newcommand{\thelastupdate}{#1}}
-\newcommand{\email}[1]{\newcommand{\theemail}{#1}}
 
 \renewcommand{\maketitle}
 {
@@ -117,7 +122,7 @@
 		\endfoot
 		\hline
 		\endlastfoot
-		\multicolumn{3}{|c|}{\cellcolor{BlueGreen!60}版本控制} \\
+		\multicolumn{3}{|c|}{\cellcolor[rgb]{0.71,0.78,0.91}版本控制} \\
 		\hline
 		序号 & 修改日期 & 备注 \\ \hline
 	}
@@ -134,11 +139,11 @@
 		\endfoot
 		\hline
 		\endlastfoot
-		\multicolumn{3}{|c|}{\cellcolor{BlueGreen!60}简称说明} \\
+		\multicolumn{3}{|c|}{\cellcolor[rgb]{0.71,0.78,0.91}简称说明} \\
 		\hline
 		序号 & 简称 & 备注 \\ \hline
 	}
-	{\end{longtable}}
+{\end{longtable}}
 
 \newenvironment{symtab}{
 	\begin{longtable}{|p{0.05\textwidth}|p{0.2\textwidth}|p{0.65\textwidth}|}
@@ -151,8 +156,8 @@
 		\endfoot
 		\hline
 		\endlastfoot
-		\multicolumn{3}{|c|}{\cellcolor{BlueGreen!60}符号说明} \\
+		\multicolumn{3}{|c|}{\cellcolor[rgb]{0.71,0.78,0.91}符号说明} \\
 		\hline
 		序号 & 符号 & 备注 \\ \hline
 	}
-	{\end{longtable}}
+{\end{longtable}}

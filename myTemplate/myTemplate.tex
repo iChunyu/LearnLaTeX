@@ -31,16 +31,96 @@
 	
 	\tableofcontents		% 生成目录
 	\clearpage
+	
+	\listoffigures
+	\clearpage
+	
+	\listoftables
+	\clearpage
 
 	\pagenumbering{arabic}
 	\setcounter{page}{1}	% 正文重新开始于1
 	
-	\section{一级标题}
-	\subsection{二级标题}
-	\subsubsection{三级标题}
-	正文\cite{liuhaiyang}
+	\section{使用说明}
+	按照排版的顺序，简要说明本模板的使用方法。
+	首先在导言区申明文档类为springdoc模板；
+	在导言区分别给出标题、作者、时间、邮箱等信息。
 	
-	正文
+	在正文区，可使用\verb|\maketitle|生成封面，
+	该命令已由模板文件重载。
+	
+	模板定义了扉页的相关说明性表格，
+	分别可由vertab、abbrtab、symtab环境直接给定内容，
+	也可以不与采用。
+	
+	tex文件中\verb|\tableofcontents|用于生成目录，
+	\verb|\listoffigures|、\verb|\listoftables|分别生成图表目录，
+	可根据需求取舍。
+	
+	\subsection{正文编辑}
+	
+	正文编辑规则与 \LaTeX 基本规则相同，
+	可参考
+	\href{https:github.com/iChunyu/LearnLaTeX}{仓库}
+	中的相关简介。
+	
+	本模板对代码环境进行了调整，
+	默认代码语言为MATLAB，
+	需要更改时可在环境中加入可选参数，
+	如\verb|\begin{lstlisting}[language = C]|。
+	
+	
+\begin{lstlisting}
+% decode_txt decodes hex text file to normalized decimal data
+% All data is decoded as a complement
+% Usage: NormData = decode_txt(FileName,ByteFormat,DataIndex)
+%     FileName   --- Full name of data file
+%     ByteFormat --- Byte format of data packet
+%     DataIndex  --- The index of the data in pacaket
+% Example:
+%     FileName = 'ExpData.dat';
+%     ByteFormat = [  4 ...   % 1:   Header
+%                 3 3 3  ...  % 2-4: Three acceleration data X/Y/Z
+%                 2 2 2 ];    % 5-7: Three translation data X/Y/Z
+%         E.g. ByteFormat(5) = 2, according to the comments:
+%                 5 means the 5th data in pacaket, which is X translation;
+%                 2 means the data takes 2 bytes.
+%     DataIndex = [ 2 7 ];    % Extract 2nd and 13th data in pacaket
+%     Call decode_txt, output is X acceleration and Z translation.
+% Notice that: Output data is normalized!
+
+% XiaoCY 2019-06-14
+
+%% Main
+function NormData = decode_txt(FileName,ByteFormat,DataIndex)
+FileID = fopen(FileName,'r');
+RawData = textscan(FileID,repmat('%2s',1,sum(ByteFormat)), ...
+	'TextType','string');
+fclose(FileID);
+
+for k = 1:length(RawData)
+RawData{k} = strtrim(RawData{k});
+end
+RawData = [RawData{:}];
+
+[NPoint,~] = size(RawData);
+NIndex = length(DataIndex);
+DecData = zeros(NPoint,NIndex);
+NormData = zeros(NPoint,NIndex);
+
+for k = 1:NIndex
+StartByte = sum(ByteFormat(1:DataIndex(k)-1))+1;
+EndByte = StartByte+ByteFormat(DataIndex(k))-1;
+MSB = 2^(ByteFormat(DataIndex(k))*8-1);
+for m = 1:NPoint
+DecData(m,k) = hex2dec([RawData{m,StartByte:EndByte}]);
+end
+IndexN = DecData(:,k)>MSB;          % Negative data index
+IndexP = ~IndexN;                   % Positive data index       
+NormData(IndexP,k) = DecData(IndexP,k)/MSB;
+NormData(IndexN,k) = (DecData(IndexN,k)-MSB*2)/MSB;
+end
+\end{lstlisting}
 	
 	\bibliography{ref}
 	
