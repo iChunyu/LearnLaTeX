@@ -1,0 +1,52 @@
+% =============== 导言区 ===============
+\documentclass{springdoc}
+
+\title{我的 \LaTeX 模板}
+\author{XiaoCY}
+\version{1.1}
+\finishdate{2020-02-02}
+\lastupdate{2020-02-02}
+\email{chunyu2018@foxmail.com}
+
+% =============== 正文区 ===============
+\begin{document}
+	
+	\maketitle
+	
+	\pagenumbering{Roman}
+	
+	\begin{vertab}	% 版本控制
+		1 & 2020-02-13 & 创建文档 \\
+	\end{vertab}
+
+	\begin{abbrtab}	% 简称说明
+		1 & PID & 比例-积分-微分控制器 \\
+	\end{abbrtab}
+
+	\begin{symtab}	% 符号说明
+		1 & $\tilde{\mathfrak{q}}$ & 误差四元数 \\
+	\end{symtab}
+
+	\clearpage
+	
+	\tableofcontents		% 生成目录
+	\clearpage
+
+	\pagenumbering{arabic}
+	\setcounter{page}{1}	% 正文重新开始于1
+	
+	\section{一级标题}
+	\subsection{二级标题}
+	\subsubsection{三级标题}
+	正文\cite{liuhaiyang}
+	
+	正文
+	
+	\bibliography{ref}
+	
+	\appendix
+	
+	\section{一级附录}
+	\subsection{二级附录}
+
+\end{document}
