@@ -93,32 +93,32 @@
 
 %% Main
 function NormData = decode_txt(FileName,ByteFormat,DataIndex)
-FileID = fopen(FileName,'r');
-RawData = textscan(FileID,repmat('%2s',1,sum(ByteFormat)), ...
-	'TextType','string');
-fclose(FileID);
-
-for k = 1:length(RawData)
-RawData{k} = strtrim(RawData{k});
-end
-RawData = [RawData{:}];
-
-[NPoint,~] = size(RawData);
-NIndex = length(DataIndex);
-DecData = zeros(NPoint,NIndex);
-NormData = zeros(NPoint,NIndex);
-
-for k = 1:NIndex
-StartByte = sum(ByteFormat(1:DataIndex(k)-1))+1;
-EndByte = StartByte+ByteFormat(DataIndex(k))-1;
-MSB = 2^(ByteFormat(DataIndex(k))*8-1);
-for m = 1:NPoint
-DecData(m,k) = hex2dec([RawData{m,StartByte:EndByte}]);
-end
-IndexN = DecData(:,k)>MSB;          % Negative data index
-IndexP = ~IndexN;                   % Positive data index       
-NormData(IndexP,k) = DecData(IndexP,k)/MSB;
-NormData(IndexN,k) = (DecData(IndexN,k)-MSB*2)/MSB;
+	FileID = fopen(FileName,'r');
+	RawData = textscan(FileID,repmat('%2s',1,sum(ByteFormat)), ...
+		'TextType','string');
+	fclose(FileID);
+	
+	for k = 1:length(RawData)
+		RawData{k} = strtrim(RawData{k});
+	end
+	RawData = [RawData{:}];
+	
+	[NPoint,~] = size(RawData);
+	NIndex = length(DataIndex);
+	DecData = zeros(NPoint,NIndex);
+	NormData = zeros(NPoint,NIndex);
+	
+	for k = 1:NIndex
+		StartByte = sum(ByteFormat(1:DataIndex(k)-1))+1;
+		EndByte = StartByte+ByteFormat(DataIndex(k))-1;
+		MSB = 2^(ByteFormat(DataIndex(k))*8-1);
+		for m = 1:NPoint
+		DecData(m,k) = hex2dec([RawData{m,StartByte:EndByte}]);
+	end
+	IndexN = DecData(:,k)>MSB;          % Negative data index
+	IndexP = ~IndexN;                   % Positive data index       
+	NormData(IndexP,k) = DecData(IndexP,k)/MSB;
+	NormData(IndexN,k) = (DecData(IndexN,k)-MSB*2)/MSB;
 end
 \end{lstlisting}
 	

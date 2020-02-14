@@ -59,9 +59,10 @@
 	keywordstyle = \color[rgb]{0.00,0.00,1.00},	% 需先引入颜色宏包
 	commentstyle = \color[rgb]{0.24, 0.46,0.24},
 	stringstyle = \color[rgb]{0.62,0.12,0.93},
-	tabsize = 4,
 	backgroundcolor = \color[rgb]{0.99,0.99,0.86},		
 	frame = single,
+	numbers = left,
+	tabsize = 4,
 	language = Matlab						% 设置默认语言
 }
 
@@ -77,6 +78,17 @@
 \RequirePackage{booktabs}					% 三线表
 \RequirePackage{longtable}					% 跨页长表格
 \RequirePackage{float}						% 图表浮动体控制
+\graphicspath{								% 默认图的路径
+	{./figure/}
+	{./figures/}
+	{./image/}
+	{./images/}
+	{./graphics/}
+	{./graphic/}
+	{./pictures/}
+	{./picture/}
+}
+
 
 % 参考文献宏包
 \RequirePackage[super,square]{natbib}
