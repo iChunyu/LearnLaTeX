@@ -38,13 +38,14 @@
 \usepackage{listings}
 \lstset{ % 代码环境整体设置
 	basicstyle = \ttfamily,
-	keywordstyle = \bfseries,
-	commentstyle = \rmfamily\upshape,
-	stringstyle = \ttfamily\slshape,
-	tabsize = 4,
-	backgroundcolor = \color{lightgray},	% 需先引入颜色宏包
+	keywordstyle = \color[rgb]{0.00,0.00,1.00},	% 需先引入颜色宏包
+	commentstyle = \color[rgb]{0.24, 0.46,0.24},
+	stringstyle = \color[rgb]{0.62,0.12,0.93},
+	backgroundcolor = \color[rgb]{0.99,0.99,0.86},		
 	frame = single,
-	language = TeX							% 设置默认语言
+	numbers = left,
+	tabsize = 4,
+	language = {[LaTeX]TeX}						% 设置默认语言
 }
 
 % 优化脚注
