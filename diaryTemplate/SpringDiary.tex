@@ -1,0 +1,49 @@
+\documentclass[UTF8,fontset=adobe,twoside]{ctexart}
+
+% 设置页面格式：A5
+\usepackage{geometry}
+\geometry{
+    paper = a5paper,
+    inner = 2.0cm,
+    outer = 2.0cm,
+    top = 2.5cm,
+    bottom = 2.5cm
+}
+
+% 日记环境
+\newenvironment{diary}[1]{%
+    {\noindent\large\textbf{#1}\par}%
+    }{\par\vspace{0.5cm}}
+
+
+
+
+
+\begin{document}
+
+    \pagestyle{empty}           % 不显示页码
+
+    \begin{titlepage}
+        \zihao{4}
+        \  % placeholder
+
+        \vspace{\fill}
+
+        \begin{center}
+            {\Huge\bfseries 某春雨的日记本} \\
+            \rule[0.7em]{\linewidth}{0.5ex}
+            
+            \vspace{\stretch{4}}
+
+            {\normalsize\slshape chunyu2018@foxmail.com}
+        \end{center}
+    \end{titlepage}
+
+    \cleardoublepage
+
+    \setcounter{page}{1}        % 页码从 1 重新开始
+    \pagestyle{headings}        % 顶端显示页码
+
+    \input{contents.tex}        % 日记汇总（由 makeDiary.py 生成）
+
+\end{document}
