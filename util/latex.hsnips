@@ -1,0 +1,196 @@
+// Req: HyperSinps [extension]
+//      (homepage)      https://github.com/draivin/hsnips
+//      (market place)  https://marketplace.visualstudio.com/items?itemName=draivin.hsnips
+// XiaoCY 2022-05-26
+
+// ============================================================
+// Shor commands to deal with fractions
+// Ref: https://stackoverflow.com/questions/62545965/vscode-advanced-custom-snippets
+// ============================================================
+snippet ff "Fraction" iA
+\frac{$1}{$2}$0
+endsnippet
+
+snippet `((\d+)|(\d*)(\\)?([A-Za-z]+)((\^|_)(\{\d+\}|\d))*)/` "Fraction no ()" A
+\frac{``rv = m[1]``}{$1}$0
+endsnippet
+
+snippet `^.*\)/` "Fraction with ()" A
+``
+    let str = m[0];
+    str = str.slice(0, -1);
+    let lastIndex = str.length - 1;
+
+    let depth = 0;
+    let i = str.length - 1;
+
+    while (true) {
+        if (str[i] == ')') depth += 1;
+        if (str[i] == '(') depth -= 1;
+        if (depth == 0) break;
+        i -= 1;
+    }
+
+    rv = str.slice(0, i) + "\\frac{" + str.slice(i+1, -1) + "}";
+``{$1}$0
+endsnippet
+// ------------------------------------------------------------------------------
+
+
+
+// ============================================================
+// Automatically expand delimiter
+// ============================================================
+snippet lr() "auto-expand ()" wA
+\left( $1 \right)$0
+endsnippet
+
+snippet lr[] "auto-expand []" wA
+\left[ $1 \right]$0
+endsnippet
+
+snippet lr{} "auto-expand {}" wA
+\left\{ $1 \right\}$0
+endsnippet
+
+snippet lr< "auto-expand <>" wA
+\left\langle $1 \right\rangle$0
+endsnippet
+
+snippet ab| "auto-expand ||" wA
+\left\lvert $1 \right\rvert$0
+endsnippet
+
+snippet no| "auto-expand \|\|" wA
+\left\lVert $1 \right\rVert$0
+endsnippet
+
+
+// Manually control the size of delimiter
+snippet b() "big ()" wA
+\bigl( $1 \bigr)$0
+endsnippet
+
+snippet bb() "Big ()" wA
+\Bigl( $1 \Bigr)$0
+endsnippet
+
+snippet bg() "bigg ()" wA
+\biggl( $1 \biggr)$0
+endsnippet
+
+snippet bbg() "Bigg ()" wA
+\Biggl( $1 \Biggr)$0
+endsnippet
+
+
+// ============================================================
+// Change math font
+// ============================================================
+snippet `([A-Za-z]+)rm` "mathrm" A
+``rv = '\\mathrm{' + m[1] + '}'``$0
+endsnippet
+
+snippet `([A-Za-z]+)bf` "mathbf" A
+``rv = '\\mathbf{' + m[1] + '}'``$0
+endsnippet
+
+snippet `([A-Za-z]+)fk` "mathfrak" A
+``rv = '\\mathfrak{' + m[1] + '}'``$0
+endsnippet
+
+snippet `([\\\{\}A-Za-z]+)bm` "bm" A
+``rv = '\\bm{' + m[1] + '}'``$0
+endsnippet
+
+
+# ============================================================
+# Add hats to symbols
+# ============================================================
+# `\vec` only accepts a single letter
+snippet `([A-Za-z])vec` "vec" A
+``rv = '\\vec{' + m[1] + '}'``$0
+endsnippet
+
+# Commands below may be used with others like `\dot{\bar{x}}` (type: `xbardot`)
+snippet `([\\\{\}A-Za-z]+)dot` "dot" A
+``rv = '\\dot{' + m[1] + '}'``$0
+endsnippet
+
+snippet `([\\\{\}A-Za-z]+)ddo` "ddot" A
+``rv = '\\ddot{' + m[1] + '}'``$0
+endsnippet
+
+snippet `([\\\{\}A-Za-z]+)hat` "hat" A
+``rv = '\\hat{' + m[1] + '}'``$0
+endsnippet
+
+snippet `([\\\{\}A-Za-z]+)bar` "bar" A
+``rv = '\\bar{' + m[1] + '}'``$0
+endsnippet
+
+snippet `([\\\{\}A-Za-z]+)bre` "breve" A
+``rv = '\\breve{' + m[1] + '}'``$0
+endsnippet
+
+snippet `([\\\{\}A-Za-z]+)til` "tilde" A
+``rv = '\\tilde{' + m[1] + '}'``$0
+endsnippet
+
+
+// ============================================================
+// Common-used math enviromments
+// ============================================================
+snippet equ "equation" bA
+\begin{equation}
+	$1
+\end{equation}
+$0
+endsnippet
+
+snippet gat "gather" bA
+\begin{gather}
+	$1
+\end{gather}
+$0
+endsnippet
+
+snippet ali "align" bA
+\begin{align}
+	$1
+\end{align}
+$0
+endsnippet
+
+snippet gad "gathered" wA
+\begin{gathered}
+	$1
+\end{gathered}$0
+endsnippet
+
+snippet ald "aligned" wA
+\begin{aligned}
+	$1
+\end{aligned}$0
+endsnippet
+
+# Matrices
+snippet pmat "pmatrix" wA
+\begin{pmatrix}$1\end{pmatrix}$0
+endsnippet
+
+snippet bmat "bmatrix" wA
+\begin{bmatrix}$1\end{bmatrix}$0
+endsnippet
+
+snippet Bmat "Bmatrix" wA
+\begin{Bmatrix}$1\end{Bmatrix}$0
+endsnippet
+
+snippet vmat "vmatrix" wA
+\begin{vmatrix}$1\end{vmatrix}$0
+endsnippet
+
+snippet Vmat "Vmatrix" wA
+\begin{Vmatrix}$1\end{Vmatrix}$0
+endsnippet
