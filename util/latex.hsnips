@@ -174,7 +174,6 @@ snippet ald "aligned" wA
 \end{aligned}$0
 endsnippet
 
-# Matrices
 snippet pmat "pmatrix" wA
 \begin{pmatrix}$1\end{pmatrix}$0
 endsnippet
@@ -193,4 +192,53 @@ endsnippet
 
 snippet Vmat "Vmatrix" wA
 \begin{Vmatrix}$1\end{Vmatrix}$0
+endsnippet
+
+// ============================================================
+// Common enviromments
+// ============================================================
+snippet `(env)|(beg)` "begin an environment" bA
+\begin{$1}
+	$0
+\end{$1}
+endsnippet
+
+snippet fig "figure" bA
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=${1:\\linewidth}]{$2}
+	\caption{$3}
+	\label{fig:$4}
+\end{figure}
+$0
+endsnippet
+
+snippet tabu "table with tabular" bA
+\begin{table}[!htb]
+	\centering
+	\caption{$1}
+	\label{tab:$2}
+	\begin{tabular}{$3}
+		$0
+	\end{tabular}
+\end{table}
+endsnippet
+
+snippet tabx "table with tabularx" bA
+\begin{table}[!htb]
+	\centering
+	\caption{$1}
+	\label{tab:$2}
+	\begin{tabularx}{$3}{$4}
+		$0
+	\end{tabularx}
+\end{table}
+endsnippet
+
+snippet tabl "table lines" bA
+\toprule
+$1
+\midrule
+$2
+\bottomrule
 endsnippet
