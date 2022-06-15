@@ -1,20 +1,31 @@
 // Req: HyperSinps [extension]
 //      (homepage)      https://github.com/draivin/hsnips
 //      (market place)  https://marketplace.visualstudio.com/items?itemName=draivin.hsnips
+
 // XiaoCY 2022-05-26
+// XiaoCY 2022-06-15, update snippets and add function to check math
+
+global
+function math(context){
+    return context.scopes.some(s => s.includes(".math"));
+}
+endglobal
 
 // ============================================================
 // Shor commands to deal with fractions
 // Ref: https://stackoverflow.com/questions/62545965/vscode-advanced-custom-snippets
 // ============================================================
+context math(context)
 snippet ff "Fraction" iA
 \frac{$1}{$2}$0
 endsnippet
 
+context math(context)
 snippet `((\d+)|(\d*)(\\)?([A-Za-z]+)((\^|_)(\{\d+\}|\d))*)/` "Fraction no ()" A
 \frac{``rv = m[1]``}{$1}$0
 endsnippet
 
+context math(context)
 snippet `^.*\)/` "Fraction with ()" A
 ``
     let str = m[0];
@@ -41,44 +52,54 @@ endsnippet
 // ============================================================
 // Automatically expand delimiter
 // ============================================================
+context math(context)
 snippet lr() "auto-expand ()" wA
 \left( $1 \right)$0
 endsnippet
 
+context math(context)
 snippet lr[] "auto-expand []" wA
 \left[ $1 \right]$0
 endsnippet
 
+context math(context)
 snippet lr{} "auto-expand {}" wA
 \left\{ $1 \right\}$0
 endsnippet
 
+context math(context)
 snippet lr< "auto-expand <>" wA
 \left\langle $1 \right\rangle$0
 endsnippet
 
+context math(context)
 snippet ab| "auto-expand ||" wA
 \left\lvert $1 \right\rvert$0
 endsnippet
 
+context math(context)
 snippet no| "auto-expand \|\|" wA
 \left\lVert $1 \right\rVert$0
 endsnippet
 
 
 // Manually control the size of delimiter
+context math(context)
 snippet b() "big ()" wA
 \bigl( $1 \bigr)$0
 endsnippet
 
+context math(context)
 snippet b2() "Big ()" wA
 \Bigl( $1 \Bigr)$0
 endsnippet
 
+context math(context)
 snippet b3() "bigg ()" wA
 \biggl( $1 \biggr)$0
 endsnippet
 
+context math(context)
 snippet b4() "Bigg ()" wA
 \Biggl( $1 \Biggr)$0
 endsnippet
@@ -87,18 +108,22 @@ endsnippet
 // ============================================================
 // Change math font
 // ============================================================
+context math(context)
 snippet `([A-Za-z]+)rm` "mathrm" A
 ``rv = '\\mathrm{' + m[1] + '}'``$0
 endsnippet
 
+context math(context)
 snippet `([A-Za-z]+)bf` "mathbf" A
 ``rv = '\\mathbf{' + m[1] + '}'``$0
 endsnippet
 
+context math(context)
 snippet `([A-Za-z]+)fk` "mathfrak" A
 ``rv = '\\mathfrak{' + m[1] + '}'``$0
 endsnippet
 
+context math(context)
 snippet `([\\\{\}A-Za-z]+)bm` "bm" A
 ``rv = '\\bm{' + m[1] + '}'``$0
 endsnippet
@@ -108,31 +133,38 @@ endsnippet
 # Add hats to symbols
 # ============================================================
 # `\vec` only accepts a single letter
+context math(context)
 snippet `([A-Za-z])vec` "vec" A
 ``rv = '\\vec{' + m[1] + '}'``$0
 endsnippet
 
 # Commands below may be used with others like `\dot{\bar{x}}` (type: `xbardot`)
+context math(context)
 snippet `([\\\{\}A-Za-z]+)dot` "dot" A
 ``rv = '\\dot{' + m[1] + '}'``$0
 endsnippet
 
+context math(context)
 snippet `([\\\{\}A-Za-z]+)ddo` "ddot" A
 ``rv = '\\ddot{' + m[1] + '}'``$0
 endsnippet
 
+context math(context)
 snippet `([\\\{\}A-Za-z]+)hat` "hat" A
 ``rv = '\\hat{' + m[1] + '}'``$0
 endsnippet
 
+context math(context)
 snippet `([\\\{\}A-Za-z]+)bar` "bar" A
 ``rv = '\\bar{' + m[1] + '}'``$0
 endsnippet
 
+context math(context)
 snippet `([\\\{\}A-Za-z]+)bre` "breve" A
 ``rv = '\\breve{' + m[1] + '}'``$0
 endsnippet
 
+context math(context)
 snippet `([\\\{\}A-Za-z]+)til` "tilde" A
 ``rv = '\\tilde{' + m[1] + '}'``$0
 endsnippet
@@ -140,6 +172,7 @@ endsnippet
 // ============================================================
 // Common used operations
 // ============================================================
+context math(context)
 snippet `(\S+)\;(\S*)\;(\S*)\;` "sub/superscript" A
 ``
 let val = m[1];
@@ -161,10 +194,12 @@ rv = val;
 ``$0
 endsnippet
 
+context math(context)
 snippet `([\}\)\]A-Za-z]+)ii` "inverse" A
 ``rv = m[1] + '^{-1}'``$0
 endsnippet
 
+context math(context)
 snippet `([A-Za-z0-9]+)sr` "sqrt" A
 ``rv = '\\sqrt{' + m[1] + '}'``$0
 endsnippet
