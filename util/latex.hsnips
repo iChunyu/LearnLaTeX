@@ -137,9 +137,41 @@ snippet `([\\\{\}A-Za-z]+)til` "tilde" A
 ``rv = '\\tilde{' + m[1] + '}'``$0
 endsnippet
 
+// ============================================================
+// Common used operations
+// ============================================================
+snippet `(\S+)\;(\S*)\;(\S*)\;` "sub/superscript" A
+``
+let val = m[1];
+let sub = m[2];
+let sup = m[3];
+if(sub.length==1){
+    val += '_' + sub;
+    }
+else if(sub.length>=2){
+    val = val + '_{' + sub + '}';
+    }
+if(sup.length==1){
+    val = val + '^' + sup;
+    }
+else if(sup.length>=2){
+    val = val + '^{' + sup + '}';
+    }
+rv = val;
+``$0
+endsnippet
+
+snippet `([\}\)\]A-Za-z]+)ii` "inverse" A
+``rv = m[1] + '^{-1}'``$0
+endsnippet
+
+snippet `([A-Za-z0-9]+)sr` "sqrt" A
+``rv = '\\sqrt{' + m[1] + '}'``$0
+endsnippet
+
 
 // ============================================================
-// Common-used math enviromments
+// Math enviromments
 // ============================================================
 snippet equ "equation" bA
 \begin{equation}
@@ -175,23 +207,23 @@ snippet ald "aligned" wA
 endsnippet
 
 snippet pmat "pmatrix" wA
-\begin{pmatrix}$1\end{pmatrix}$0
+\begin{pmatrix} $1 \end{pmatrix}$0
 endsnippet
 
 snippet bmat "bmatrix" wA
-\begin{bmatrix}$1\end{bmatrix}$0
+\begin{bmatrix} $1 \end{bmatrix}$0
 endsnippet
 
 snippet Bmat "Bmatrix" wA
-\begin{Bmatrix}$1\end{Bmatrix}$0
+\begin{Bmatrix} $1 \end{Bmatrix}$0
 endsnippet
 
 snippet vmat "vmatrix" wA
-\begin{vmatrix}$1\end{vmatrix}$0
+\begin{vmatrix} $1 \end{vmatrix}$0
 endsnippet
 
 snippet Vmat "Vmatrix" wA
-\begin{Vmatrix}$1\end{Vmatrix}$0
+\begin{Vmatrix} $1 \end{Vmatrix}$0
 endsnippet
 
 // ============================================================
