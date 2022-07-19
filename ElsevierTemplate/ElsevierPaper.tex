@@ -1,0 +1,102 @@
+\documentclass[preprint,3p,onecolumn]{elsarticle}
+% \documentclass[preprint,3p,twocolumn]{elsarticle}
+
+\input{packages.tex}
+\journal{某春雨的后花园}
+\bibliographystyle{elsarticle-num}
+\biboptions{sort&compress}
+
+
+% ====================== 修订格式设置 ======================
+\usepackage[pagewise]{lineno}
+\undef\comment  % changes 宏包会重新定义 \comment，取消之前的定义以避免冲突
+\usepackage{changes}
+\setdeletedmarkup{{\color{gray}\sout{#1}}}
+
+% [可选] 使用边注提示审稿人相应问题的回复
+\usepackage{marginnote}
+\newcommand\Rev[1]{
+    \marginnote{\tcbox[on line,
+    arc=4pt,colback=blue!10!white,colframe=blue!50!black,
+    boxrule=0.7pt,boxsep=0pt,left=3pt,right=3pt,top=3pt,bottom=3pt]{
+    \small Rev. #1
+}}}
+% ==========================================================
+
+
+% ====================== 中文魔改设置 ======================
+%              以下内容在编写英文论文时应当删除             
+% ----------------------------------------------------------
+\usepackage[UTF8,fontset=adobe]{ctex}
+\ctexset{bibname=参考文献}
+\captionsetup{font=normalsize}
+
+% cleveref 汉化
+\crefname{equation}{式}{式}
+\crefname{table}{表}{表}
+\crefname{figure}{图}{图}
+\crefformat{section}{第~#2#1#3~节}
+\crefformat{subsection}{第~#2#1#3~小节}
+
+% Elsvier 标题信息
+\makeatletter
+\renewcommand{\@elsarticleabstitle}{摘要}
+\renewcommand{\@elsarticlekwdtitle}{关键词}
+\renewcommand\ps@pprintTitle{%
+     \let\@oddhead\@empty
+     \let\@evenhead\@empty
+     \def\@oddfoot{\@myfooterfont 投稿至：\@journal\hfill\@date}
+     \let\@evenfoot\@oddfoot}
+\makeatother
+
+% 行内代码设置
+% \usepackage{tcolorbox}
+% \newtcbox{\mycode}[1][gray]{ 
+%     arc=0pt,outer arc=0pt,
+%     boxsep=0pt,left=1pt,right=1pt,top=2pt,bottom=2pt,boxrule=0pt,
+%     fontupper=\ttfamily\color{red!70!white}
+% }
+% ----------------------------------------------------------
+%              以上内容在编写英文论文时应当删除             
+% ==========================================================
+
+
+\begin{document}
+    \begin{frontmatter}
+        \title{Elsvier 期刊的 \LaTeX 模板使用简介}
+
+        \author[1]{小春雨}
+        \author[2]{大春雨 \corref{cor}}
+
+        \address[1]{手动使用逗号或句号分割的，完整的，可自定义内容的地址}
+        \affiliation[2]{
+            organization={组织或机构名称},
+            addressline={详细地址},
+            city={城市},
+            postcode={邮政编码},
+            country={国家}
+            }
+
+        \cortext[cor]{通讯作者: \href{mailto:chunyu.hust@gmail.com}{chunyu.hust@gmail.com}}
+
+        \begin{abstract}
+        % 摘要中的行号需要使用 `linenumbers` 环境
+        % \begin{linenumbers}
+            \LaTeX 是一个非常优秀的排版软件，以其精细的格式调整和完善的数学支持等特性，常用于各类期刊文章的排版。然而，不同于 Microsoft Word 等所见即所得的文字编辑软件，\LaTeX 为了将内容与格式分离，使用代码形式编写文档，导致其上手难度较大。为了使小伙伴快速掌握 \LaTeX 排版技巧，本文以 Elsevier 出版社提供的模板为主，介绍该模板的使用方法，并分享其他常用的排版技巧。
+        % \end{linenumbers}
+        \end{abstract}
+
+        \begin{keyword}
+            Elsevier 模板 \sep 
+            \LaTeX 模板 \sep
+            使用简介
+        \end{keyword}
+    \end{frontmatter}
+
+    \input{main.tex}
+
+    \section*{致谢}
+    
+
+    \bibliography{references}
+\end{document}
