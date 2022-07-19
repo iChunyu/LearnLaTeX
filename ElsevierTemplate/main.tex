@@ -1,11 +1,11 @@
-\section{准备工作}
+\section{准备工作} \label{sec:preparation}
 
 本文假设小伙伴已经正确安装了 \TeX~Live 并对个人爱好的编辑器进行了相应的配置。安装与配置可以参考我博客里的\href{https://ichunyu.github.io/categories/latex/}{系列文章}。Elsevier 的模板已被该发行版收录，且本文所需的其他所有宏包均无需再手动下载。
 
 
 \LaTeX 在编译过程中会产生大量的临时文件，通常由独立的文件夹来管理不同文档。对于期刊文章这类小型文档，个人推荐的文件结构由以下5部分构成：
 
-\begin{itemize}
+\begin{itemize}[nosep]
     \item 顶层设置文件
 
         类似与各类程序的主函数，建议使用独立的 \verb|.tex| 文件管理文件结构。在该顶层文件中对期刊模板进行设置，例如文章标题、作者、地址等信息。此外，顶层文件还对修订过程中临时使用的宏包进行设置，并利用 \verb|\input| 命令引入正文所需的宏包以及正文内容、管理致谢、参考文献等章节的基本顺序。这样做的好处在于：不同期刊提供了不同的模板，当需要更换不同期刊模板时，只需要创建新的顶层文件并进行相应修改即可。本文的顶层文件为 \verb|ElsevierPaper.tex|。
@@ -36,18 +36,118 @@
 
 
 
-\section{标题页设置}
+\section{标题与模板设置} \label{sec:frontmatter}
+
+由于不同的期刊模板会提供不同的命令进行标题页设置，所以标题页通常建议在顶层文件进行设置。可以通过命令行运行 \verb|texdoc elsarticle| 查看 Elsevier 模板的官方说明，或打开本文的顶层文档跟我一起进行配置。
 
 
-\section{编写正文}
+首先通过 \verb|\documentclass| 命令声明文档类，并在花括号中指明 Elsevier 模板，这样就完成了文章绝大部分的格式设置。进一步，可以使用中括号对文档类进行细部设置，例如对双盲审期刊，可在投稿时加入 \verb|doubleblind| 选项隐藏必要信息。除此外，这里介绍该模板支持的三种文档格式，其他可选项请参考官方说明。
 
-\subsection{插图}
-\subsection{表格}
-\subsection{公式}
-\subsection{引用}
+\begin{itemize}[nosep]
+    \item \verb|1p|：正文在 $\SI{13.5}{cm}\times\SI{19.75}{cm}$ 范围内，且只能使用单栏排版；
+    \item \verb|3p|：正文在 $\SI{16.45}{cm}\times\SI{21.9}{cm}$ 范围内，可使用单栏或双栏排版；
+    \item \verb|5p|：正文在 $\SI{18.35}{cm}\times\SI{24}{cm}$ 范围内，且只能使用双栏排版；
+\end{itemize}
 
-\section{修订文档}
 
-\section{高级技巧}
+本文使用了 \verb|[3p,onecolumn]| 选项，读者可尝试将第二选项改为 \verb|twocolumn| 转化为双栏。应当注意，\verb|1p| 和 \verb|5p| 格式不需要指定分栏样式。
 
+
+声明文档类后，使用 \verb|\input{packages}| 导入正文所需的宏包。这些宏包通常只是对部分功能进行美化，将在\cref{sec:context}进行介绍。
+
+
+紧接着的三个命令分别是 \verb|\journal| 指定投稿期刊、\verb|bibliographystyle| 使用 Elsevier 的参考文件样式、\verb|biboptions| 将参考文献设置为按顺序编号并压缩连续引用的编号。
+
+
+修订格式的设置将在\cref{sec:revision}进行介绍，这里暂且跳过。需要注意的是，修订部分的格式只在与审稿人沟通时显式标记修改。如果期刊要求最终提供干净的源码，这部分格式设置将是不必要的。因此放置在顶层文件中随时注释以取消设置。
+
+
+Elsevier 期刊模板只适用于英文，本文的中文魔改主要依赖于 \verb|ctex| 宏包，相关设置不予介绍。基于本文源码编写英文文档时，完成后应当将中文魔改部分删除或注释。
+
+
+在 Elsevier 模板中，标题页的所有设置均在 \verb|frontmatter| 环境中完成，且该模板提供的命令大多都是可以顾名思义的：使用 \verb|\title| 声明文章的标题，使用多个 \verb|\author| 按顺序给出作者。其中，\verb|\author| 可使用中括号作为可选项指定作者的地址，中括号内的数字编号与后面定义通讯地址的 \verb|\address| 或 \verb|\affiliation| 的数字编号相对应。其中，\verb|\address| 需要手动分割各级地址的信息，而 \verb|\affiliation| 采用键值对的方式录入地址。文章的通讯作者可以使用 \verb|\corref| 和 \verb|\cortext| 这一对命令指定，前者需要放置在 \verb|\author| 命令内，后者一般显示地标记“通讯作者”字样并给出邮箱信息。
+
+
+
+
+\section{编写文档} \label{sec:context}
+
+\subsection{正文} \label{subsec:text}
+
+在 \LaTeX 文档中，正文的绝大部分内容都以文本的形式呈现。正文文本的换行不会引起编译后文档的换行，这使得在修改时不必完全删除之前的内容，只需要将被修改的内容换行并注释掉即可。
+% 比如这里就注释掉了一句不需要出现在正文中的句子。
+% 并且只要不出现空行，就不会导致实际文档的换段。
+需要进入下一段时，源码的两段文字之间要求至少存在一个空行。
+
+
+为了区分正文的章节，可以使用 \verb|\section|、 \verb|subsection| 或 \verb|\subsubsection| 命令分节，并给出各节的小标题。这些命令可以增加星号，如 \verb|\section*|，这样产生的新的一节不会进行编号，常用于致谢和参考文献。
+
+
+对于理工学科，正文中通常会出现带单位的数字，例如 \SI{e5}{km}。使用 \verb|siunitx| 宏包的 \verb|\SI| 命令可以很方便地处理这类问题。该命令的第一个参数为数值，支持程序语言的写法如 \verb|5.2e-15|，第二个参数为单位。该命令可以自动处理数值与单位之间的空格以及单位的直立字体。特别地，该宏包支持使用国际单位制的标准单位，例如 \verb|\SI{10}{\micro\meter}| 将编译成 \SI{10}{\micro\meter}。特别地，角度可以简单地使用 \verb|\ang{90}| 命令，对应的输出为 \ang{90}。
+
+
+\subsection{插图} \label{subsec:figures}
+
+一般的插图可以结合 \verb|figure| 环境和 \verb|\includegraphics| 命令来完成，由于我们将图片汇总在一个文件夹内，为了省略插图使的路径，可以在宏包设置中使用 \verb|\graphicspath| 设置搜索路径。
+
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=80mm]{filter.pdf}
+    \caption{常用滤波器幅频响应对比}
+    \label{fig:filter}
+\end{figure}
+
+
+\cref{fig:filter} 给出了一个插图的示例。结合源码：\verb|figure| 环境后的 \verb|[!htb]| 表示图片可以根据源码中上下文的关系出现在相应位置（\verb|h|），或放置在页面的顶端（\verb|t|）或底端（\verb|b|）。感叹号表示放松 \LaTeX 的排版约束。
+
+
+插图时可以手动指定图片的宽度，图片会按照比例进行缩放。图片的常用格式包括 \verb|.png|、\verb|.jgp|、\verb|.eps|、\verb|.pdf| 等，前两种是位图格式，后两种为矢量图。使用矢量图可以避免放大时模糊。插图之后使用 \verb|\caption| 定义图名，并使用 \verb|label| 打上标签，用于交叉应用。
+
+
+特定情况下可能需要图片并列排版，并以子图的形式呈现，这可以通过 \verb|subcaption| 宏包实现，如\cref{fig:FilterCompare} 所示。该宏包提供的 \verb|\subcaptionbox| 命令依次接收子图图名和插图命令。通过在子图的图名之后打上标签，也可以对子图进行引用，如\cref{fig:prjFilter}。
+
+
+\begin{figure}[!htb]
+    \centering
+    \subcaptionbox{切比雪夫II型滤波器幅频响应\label{fig:prjFilter}}{\includegraphics[height=40mm]{prjFilter.pdf}}
+    \hspace{5mm}
+    \subcaptionbox{零相位滤波与直接滤波时域对比\label{fig:ZeroPhaseFiltering}}{\includegraphics[height=40mm]{ZeroPhaseFiltering.pdf}}
+    \caption{滤波器幅频响应与滤波效果对比}
+    \label{fig:FilterCompare}
+\end{figure}
+
+
+\subsection{表格} \label{subsec:tables}
+
+表格可以使用 \verb|table| 环境结合 \verb|tabular| 构成表格，如\cref{tab:packages} 所示。表名和标签的设置与插图非常类似，只是表名通常在表格之前，顺序进行了调整。\verb|tabular| 后的参数为各列的对齐方式，通常使用左对齐（\verb|l|），相应地还有居中对齐（\verb|c|）和右对齐（\verb|r|）。需要注意的是，这里的设置应当与列数相一致，否则编译时会产生错误。
+
+
+\begin{table}[!htb]
+    \centering
+    \caption{本文正文涉及的必要宏包}
+    \label{tab:packages}
+    \begin{tabular}{ll}
+        \toprule
+        宏包              & 功能简介 \\
+        \midrule
+        \verb|hyperref|   & 生成超链接并处理超链接格式 \\
+        \verb|amsmath|    & \AmS 数学环境 \\
+        \verb|newtxmath|  & 数学罗马字体 \\
+        \verb|bm|         & 数学符号加粗 \\
+        \verb|siunitx|    & 处理国际单位制 \\
+        \verb|graphicx|   & 在正文中插图 \\
+        \verb|booktabs|   & 绘制三线表的横线  \\
+        \verb|subcaption| & 子图排版 \\
+        \verb|caption|    & 设置图表名格式 \\
+        \verb|cleveref|   & 自动处理交叉引用 \\
+        \verb|tocbibind|  & 将参考文献加入 \verb|.pdf| 文件标签 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{公式} \label{subsec:equations}
+\subsection{引用} \label{subsec:citations}
+
+\section{修订文档} \label{sec:revision}
 
