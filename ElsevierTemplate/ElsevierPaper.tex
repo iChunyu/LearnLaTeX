@@ -14,6 +14,7 @@
 
 % [可选] 使用边注提示审稿人相应问题的回复
 \usepackage{marginnote}
+\usepackage{tcolorbox}
 \newcommand\Rev[1]{
     \marginnote{\tcbox[on line,
     arc=4pt,colback=blue!10!white,colframe=blue!50!black,
@@ -92,6 +93,7 @@
         \end{keyword}
     \end{frontmatter}
 
+    % \linenumbers
     \input{main.tex}
 
     % \section*{致谢}
